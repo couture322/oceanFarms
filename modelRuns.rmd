@@ -233,9 +233,9 @@ nullOArun<-tempRunP(fleet = fleetOApv,
                     pK = ptchKp, 
                     PI=1,
                     runName = 0)%>%
-  filter(year=max(year))%>%
+  filter(year==max(year))%>%
   summarise(biomass=sum(biomass),
-            catch=sum(numbers_caught))
+            catch=sum(biomass_caught))
 
 # write_csv(nullOArun,"runs/openAccess/nullOA.csv")
 
@@ -250,9 +250,9 @@ nullCErun<-tempRunP(fleet = fleetCEpv,
                     pK = ptchKp, 
                     PI=1,
                     runName = 0)%>%
-  filter(year=max(year))%>%
+  filter(year==max(year))%>%
   summarise(biomass=sum(biomass),
-            catch=sum(numbers_caught))
+            catch=sum(biomass_caught))
 
 # write_csv(nullCErun,"runs/constantEffortMSY/nullCE.csv")
 
