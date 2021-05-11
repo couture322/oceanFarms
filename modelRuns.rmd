@@ -429,7 +429,6 @@ msAttrCExs<-msAttPlFun(mpaSzVec = seq(0.1,0.7,by=0.2),
 
 
 
-
 ```{r}
 
 amFsPlFunMat<-function(amVec,farmSizeVec,mpaSz,attr,pK,mImp,farmYrsVec,mgmt){
@@ -479,7 +478,7 @@ amFsPlFunMat<-function(amVec,farmSizeVec,mpaSz,attr,pK,mImp,farmYrsVec,mgmt){
 }
 
 
-### adult movement & farm size - OA
+### adult movement & farm size - OA (weak management)
 amFsOAmBen<-amFsPlFunMat(amVec = seq(0,80,by=20),
                   farmSizeVec = c(1,2,5,10,20),
                   mpaSz = 0.2,
@@ -499,30 +498,35 @@ amFsOAmNeg<-amFsPlFunMat(amVec = seq(0,80,by=20),
                   mgmt = "oa") 
 
 
-### adult movement & farm size - OA
-amFsOAmBen10<-amFsPlFunMat(amVec = seq(0,80,by=20),
+### adult movement & farm size - CE (strong management)
+amFsCEmBen<-amFsPlFunMat(amVec = seq(0,80,by=20),
                   farmSizeVec = c(1,2,5,10,20),
                   mpaSz = 0.2,
-                  attr = 10,
+                  attr = 5,
                   pK=ptchKp,
                   mImp=0.8, ## benefit bc decreases nat mort
                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                  mgmt = "oa") 
+                  mgmt = "ce") 
 
-amFsOAmNeg10<-amFsPlFunMat(amVec = seq(0,80,by=20),
+amFsCEmNeg<-amFsPlFunMat(amVec = seq(0,80,by=20),
                   farmSizeVec = c(1,2,5,10,20),
                   mpaSz = 0.2,
-                  attr = 10,
+                  attr = 5,
                   pK=ptchKp,
                   mImp=1.2, ## damage bc increases nat mort
                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                  mgmt = "oa") 
+                  mgmt = "ce") 
+
+# write_csv(amFsOAmBen,"runs/openAccess/farmEq_amFsBen.csv")
+# write_csv(amFsOAmNeg,"runs/openAccess/farmEq_amFsNeg.csv")
+# write_csv(amFsCEmBen,"runs/openAccess/farmEq_amFsBenCE.csv")
+# write_csv(amFsCEmNeg,"runs/openAccess/farmEq_amFsNegCE.csv")
 
 ```
 
 ```{r}
 
-### High mortalit: natural mortality at farms > fishing mortality
+### High mortality: natural mortality at farms > fishing mortality
 ### Not run for CE fishing
 
 ### adult movement & farm size - OA
