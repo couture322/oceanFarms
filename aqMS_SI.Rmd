@@ -1,0 +1,539 @@
+---
+title: "Ocean aquaculture - Supplemental Information"
+author: "Jessica L. Couture, et al."
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+    fig_width: 12
+---
+
+
+```{r warning=FALSE,message=FALSE}
+knitr::opts_chunk$set(echo = FALSE,warning=FALSE,message=FALSE)
+
+library(tidyverse)
+library(spasm)
+library(patchwork)
+library(paletteer)
+library(knitr)
+library(beyonce)
+
+```
+
+This document includes the supplemental information for ocean aquaculture impacts manuscript. 
+
+
+## Figure S1
+
+Farm impacts over time for a high value open access fishery. In each plot the level of attraction is varied. Top plots represent one large farm at 20% total coverage (A, B), and the bottom plots represent the 20% farm area broken into several smaller farms (C, D). Biomass and catches are in relative to the base scenario with no farm (farm scenario/no farm scenario).
+
+```{r}
+### Color palettes
+
+### Attraction values
+attrCols<-beyonce_palette(19)[c(5,2:4)]#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+names(attrCols)<-c("1","3","9","15")
+
+
+### Farm size colors
+fsCols<-c(beyonce_palette(19)[5],beyonce_palette(22)[c(2,3,5)])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+names(fsCols)<-c("20","10","5","2")
+
+
+```
+
+
+```{r}
+
+jattDat<-read_csv("runs/openAccess/timeJattOA_perc.csv")
+
+##### Relative plots
+
+attLg<-jattDat%>%
+  filter(farmDesign=="large",
+         year<101)
+
+diffBmOAJAtt<-ggplot(attLg[attLg$year>49,],aes(year, bmDiff*100,color=as.factor(run))) +
+  geom_hline(yintercept=100,color="gray66")+
+  geom_line(size=0.75)+
+    # scale_y_continuous(expand=c(0,0))+
+    scale_x_continuous(breaks=seq(50,100,by=10),labels=seq(0,50,by=10))+
+  labs(x="Year",y="% Biomass",title="")+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size=14))
+
+diffCtchOAJAtt<-ggplot(attLg[attLg$year>49,],aes(year, ctchDiff*100,color=as.factor(run))) +
+  geom_hline(yintercept=100,color="gray66")+  
+  geom_line(size=0.75)+
+    # scale_y_continuous(breaks=c(-10000,-5000,0,5000),expand=c(0,0))+
+    scale_x_continuous(breaks=seq(50,100,by=10),labels=seq(0,50,by=10))+
+    labs(x="year",y="% Catch",title = "")+
+    scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+    theme_bw()+
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size=14))
+
+attSm<-jattDat%>%
+  filter(farmDesign=="small",
+         year<101)
+
+diffBmOAJAttS<-ggplot(attSm[attSm$year>49,],aes(year, bmDiff*100,color=as.factor(run))) +
+    geom_hline(yintercept=100,color="gray66")+
+    geom_line(size=0.75)+
+    # scale_y_continuous(expand=c(0,0))+
+    scale_x_continuous(breaks=seq(50,100,by=10),labels=seq(0,50,by=10))+
+    labs(x="Year",y="% Biomass",title="")+
+    scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+    theme_bw()+
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size=14))
+
+diffCtchOAJAttS<-ggplot(attSm[attSm$year>49,],aes(year, ctchDiff*100,color=as.factor(run))) +
+  geom_hline(yintercept=100,color="gray66")+  
+  geom_line(size=0.75)+
+    # scale_y_continuous(breaks=c(-10000,-5000,0,5000),expand=c(0,0))+
+    scale_x_continuous(breaks=seq(50,100,by=10),labels=seq(0,50,by=10))+
+  labs(x="year",y="% Catch",title = "")+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size=14))
+
+
+((diffBmOAJAtt+diffCtchOAJAtt)/(diffBmOAJAttS+diffCtchOAJAttS))+
+  plot_annotation(tag_levels = "A")+
+  plot_layout(guides = "collect")
+
+```
+
+\newpage
+
+## Figure S2
+
+Farm impacts over time for a fishery fished at constant effort at maximum sustainable yield. In each plot the level of attraction is varied. Top plots represent one large farm at 20% total coverage (A, B), and the bottom plots represent the 20% farm area broken into several smaller farms (C, D). Biomass and catches are relative to the base scenario with no farm (farm scenario/no farm scenario).
+
+```{r}
+
+jattDatCE<-read_csv("runs/constantEffortMSY/timeJattCE_perc.csv")
+
+##### Relative plots
+
+attLgCE<-jattDatCE%>%
+  filter(farmDesign=="large",
+         year<101)
+
+diffBmOAJAttCE<-ggplot(attLgCE[attLgCE$year>49,],aes(year, bmDiff*100,color=as.factor(run))) +
+  geom_hline(yintercept=100,color="gray66")+
+  geom_line(size=0.75)+
+    # scale_y_continuous(expand=c(0,0))+
+    scale_x_continuous(breaks=seq(50,100,by=10),labels=seq(0,50,by=10))+
+  labs(x="Year",y="% Biomass",title="")+
+  scale_color_manual(values = attrCols, name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size=14))
+
+diffCtchOAJAttCE<-ggplot(attLgCE[attLgCE$year>49,],aes(year, ctchDiff*100,color=as.factor(run))) +
+  geom_hline(yintercept=100,color="gray66")+  
+  geom_line(size=0.75)+
+    # scale_y_continuous(breaks=c(-10000,-5000,0,5000),expand=c(0,0))+
+    scale_x_continuous(breaks=seq(50,100,by=10),labels=seq(0,50,by=10))+
+    labs(x="year",y="% Catch",title = "")+
+    scale_color_manual(values = attrCols, name="Attraction",labels=c("None","Low","Moderate","High"))+
+    theme_bw()+
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size=14))
+
+attSmCE<-jattDatCE%>%
+  filter(farmDesign=="small",
+         year<101)
+
+diffBmOAJAttSCE<-ggplot(attSmCE[attSmCE$year>49,],aes(year, bmDiff*100,color=as.factor(run))) +
+    geom_hline(yintercept=100,color="gray66")+
+    geom_line(size=0.75)+
+    # scale_y_continuous(expand=c(0,0))+
+    scale_x_continuous(breaks=seq(50,100,by=10),labels=seq(0,50,by=10))+
+    labs(x="Year",y="% Biomass",title="")+
+    scale_color_manual(values = attrCols, name="Attraction",labels=c("None","Low","Moderate","High"))+
+    theme_bw()+
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size=14))
+
+diffCtchOAJAttSCE<-ggplot(attSmCE[attSmCE$year>49,],aes(year, ctchDiff*100,color=as.factor(run))) +
+  geom_hline(yintercept=100,color="gray66")+  
+  geom_line(size=0.75)+
+    # scale_y_continuous(breaks=c(-10000,-5000,0,5000),expand=c(0,0))+
+    scale_x_continuous(breaks=seq(50,100,by=10),labels=seq(0,50,by=10))+
+  labs(x="year",y="% Catch",title = "")+
+  scale_color_manual(values = attrCols, name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size=14))
+
+
+((diffBmOAJAttCE+diffCtchOAJAttCE)/(diffBmOAJAttSCE+diffCtchOAJAttSCE))+
+  plot_annotation(tag_levels = "A")+
+  plot_layout(guides = "collect")
+
+```
+
+\newpage
+
+## Figure S3
+
+Equilibrium biomass differences given different levels of attraction to farms with farms of varying total area coverage for (A) one large contiguous farm and (B) total farm area broken up into smaller separate farms. Catch biomass difference is calculated as the difference between catch biomass with the farm scenario and a scenario with no farm.
+
+
+```{r}
+
+msAttrOA<-read_csv("runs/openAccess/farmEq_msAttrOALg.csv")
+# msAttrOAs<-read_csv("runs/aqMS/farmEq_msAttrOASm.csv") # 2 farms at 10 patches each
+msAttrOAxs<-read_csv("runs/openAccess/farmEq_msAttrOAXSm.csv") # 4 farms at 5 patches each
+nullOA<-read_csv("runs/openAccess/nullOA.csv")
+# write_csv(nullOA,"runs/aqMS/nullOA.csv")
+
+msAttrOA2<-msAttrOA%>%
+  mutate(diffBm=biomass/as.numeric(nullOA[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullOA[1,"catch"]))
+
+# msAttrOAs2<-msAttrOAs%>%
+#   mutate(diffBm=biomass-as.numeric(nullOA[1,"biomass"]),
+#          diffCtch=catch-as.numeric(nullOA[1,"catch"]))
+
+msAttrOAxs2<-msAttrOAxs%>%
+  mutate(diffBm=biomass/as.numeric(nullOA[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullOA[1,"catch"]))
+
+
+##### Plots
+sizeAttrBm<-ggplot(msAttrOA2,aes(x=mpaSize,y=diffBm*100,group=as.factor(attr),color=as.factor(attr)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+
+  labs(title = "",y="% biomass",x="total farm area\n(% of total range)")+
+  scale_y_continuous(limits = c(100,500))+
+  scale_x_continuous(breaks = seq(0.2,0.8,by=0.2),labels = seq(0.2,0.8,by=0.2)*100)+
+  scale_color_manual(values = attrCols, name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16),
+        plot.title = element_text(size=20))
+
+sizeAttrBmS<-ggplot()+ ## replaced sm with xsm to excentuate differences (smaller farms)
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(data=msAttrOAxs2,aes(x=mpaSize,y=diffBm*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
+  labs(title = "",y="",x="total farm area\n(% of total range)")+
+  scale_y_continuous(limits = c(100,500))+
+  scale_x_continuous(breaks = seq(0.2,0.8,by=0.2),labels = seq(0.2,0.8,by=0.2)*100)+
+  scale_color_manual(values = attrCols, name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16),
+        plot.title = element_text(size=20))
+
+```
+
+```{r fig.height=5}
+
+msAttrCE<-read_csv("runs/constantEffortMSY/farmEq_msAttCE.csv")
+# msAttrOAs<-read_csv("runs/aqMS/farmEq_msAttrOASm.csv") # 2 farms at 10 patches each
+msAttrCExs<-read_csv("runs/constantEffortMSY/farmEq_msAttCEsm.csv") # 4 farms at 5 patches each
+
+nullCE<-read_csv("runs/constantEffortMSY/nullCE.csv")
+
+# nullCE<-read_csv("runs/aqMS/nullCE.csv")
+
+msAttrCE2<-msAttrCE%>%
+  mutate(diffBm=biomass/as.numeric(nullCE[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullCE[1,"catch"]))
+
+msAttrCExs2<-msAttrCExs%>%
+  mutate(diffBm=biomass/as.numeric(nullCE[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullCE[1,"catch"]))
+
+### plot mpaSize by attraction
+
+sizeAttrBmCE<-ggplot(msAttrCE2,aes(x=mpaSize,y=diffBm*100,group=as.factor(attr),color=as.factor(attr)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+
+  #geom_point()+
+  labs(title = "One large farm",y="% biomass",x="")+
+  scale_y_continuous(limits = c(100,150))+
+  scale_x_continuous(breaks = seq(0.2,0.8,by=0.2),labels = seq(0.2,0.8,by=0.2)*100)+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16),
+        plot.title = element_text(size=20))
+
+sizeAttrBmSce<-ggplot()+ ## replaced sm with xsm to excentuate differences (smaller farms)
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(data=msAttrCExs2,aes(x=mpaSize,y=diffBm*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
+  labs(title = "Several smaller farms",y="",x="")+
+  scale_y_continuous(limits = c(100,150))+
+  scale_x_continuous(breaks = seq(0.2,0.8,by=0.2),labels = seq(0.2,0.8,by=0.2)*100)+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16),
+        plot.title = element_text(size=20))
+
+figS3quadBm<-(sizeAttrBmCE+sizeAttrBmSce)/(sizeAttrBm +sizeAttrBmS)+
+  plot_layout(guides = "collect")+
+  plot_annotation(tag_levels = "A")&
+    theme(plot.tag = element_text(face = 'bold'))
+
+figS3quadBm
+
+```
+
+\newpage
+
+## Figure S4
+
+Equilibrium differences in total biomass and catch biomass for different species based on adult movement for farm scenarios with very damaging effects on the wild population (damage > fishing mortality). Different farm designs are tested by farm size resulting in the indicated number of farms. 
+
+
+```{r fig.height=5}
+
+amFsOAnegKill<-read_csv("runs/openAccess/farmEq_amFsNegKill.csv")
+
+amFsOAKill<-amFsOAnegKill%>%
+  filter(farmSize>1)%>% 
+  mutate(diffBm=biomass/as.numeric(nullOA[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullOA[1,"catch"]))
+
+amFsBmKill<-ggplot(amFsOAKill,aes(x=adultMove,y=diffBm*100,group=as.factor(farmSize),color=as.factor(farmSize)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+
+  scale_color_manual(values = fsCols,name="Number\nof farms", labels=20/c(2,5,10,20))+
+  scale_y_continuous(limits = c(50,100))+
+  labs(x="Adult movement",y="% Biomass")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size=14))
+
+
+amFsCtchKill<-ggplot(amFsOAKill,aes(x=adultMove,y=diffCtch*100,group=as.factor(farmSize),color=as.factor(farmSize)))+
+ geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = fsCols,name="Number\nof farms", labels=20/c(2,5,10,20))+
+  scale_y_continuous(limits = c(0,100))+
+  labs(x="Adult movement",y="% Catch")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size=14))
+
+
+amFsBmKill + amFsCtchKill + 
+  plot_layout(guides = "collect")+
+  plot_annotation(tag_levels = "A")
+```
+
+\newpage
+
+## Figure S5
+
+Relative differences in total biomass compared to no farm over a range of total farm areas. Farms are all divided into several smaller farms. Farm scenarios with positive (A, C) and negative impacts to the wild population (C, D), under strong (A, B) and weak (B, D) fishery management. 
+
+```{r}
+
+### Farm size colors:
+szCols<-c(beyonce_palette(129)[c(1,2,4)],beyonce_palette(6)[5])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+names(szCols)<-c("60","20","3","0")
+
+szMgmtBen<-read_csv("runs/movement/farmEq_mpaMgmtAMBen.csv")
+
+szMgmtBen2<-szMgmtBen%>%
+  mutate(diffBm=case_when(mgmt == "oa" ~  biomass/as.numeric(nullOA[1,"biomass"]),
+                          TRUE ~ biomass/as.numeric(nullCE[1,"biomass"])),
+         diffCtch=case_when(mgmt=="oa" ~  catch/as.numeric(nullOA[1,"catch"]),
+                          TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
+
+zeros<-data.frame(mpaSz=0,
+                  aMove=rep(c(0,3,20,60),2),
+                  mgmt=rep(c("oa","ce"),each=4),
+                  diffBm=1,
+                  diffCtch=1)
+
+szMgmtBen3<-szMgmtBen2%>%
+  bind_rows(.,zeros)
+
+
+szMgmtBenBmOA<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="oa",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(50,805))+
+  labs(x="Total farm area\n(% of sp. range)",y="Open access\n\n% biomass",title = "")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+
+szMgmtBenBmCE<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="ce",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(50,805))+
+  labs(x="",y="Constant effort\n\n% biomass",title = "Positive impacts\n")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+```
+
+```{r fig.height=8}
+
+szMgmtNeg<-read_csv("runs/movement/farmEq_mpaMgmtAMNeg.csv")
+
+szMgmtNeg2<-szMgmtNeg%>%
+  mutate(diffBm=case_when(mgmt == "oa" ~  biomass/as.numeric(nullOA[1,"biomass"]),
+                          TRUE ~ biomass/as.numeric(nullCE[1,"biomass"])),
+         diffCtch=case_when(mgmt=="oa" ~  catch/as.numeric(nullOA[1,"catch"]),
+                          TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
+
+szMgmtNeg3<-szMgmtNeg2%>%
+  bind_rows(.,zeros)
+
+
+szMgmtNegBmOA<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="oa",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(50,805))+
+  labs(x="Total farm area\n(% of sp. range)",y="",title = "")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+
+szMgmtNegBmCE<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="ce",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(50,805))+
+  labs(x="",y="",title = "Negative impacts\n")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+figS5Plts<-((szMgmtBenBmCE + szMgmtNegBmCE)/(szMgmtBenBmOA + szMgmtNegBmOA )) +
+  plot_annotation(tag_levels = 'A') + 
+  plot_layout(guides="collect")
+
+
+figS5Plts
+
+```
+
+\newpage
+
+## Figure S6
+
+Relative differences in total biomass and catches compared to no farm over a range of total farm areas. Farms are all divided into several smaller farms. Here farms have no impact on wild population natural mortality rates.
+
+
+```{r}
+
+szMgmt0<-read_csv("runs/movement/farmEq_mpaMgmtAM0.csv")
+
+szMgmt02<-szMgmt0%>%
+  mutate(diffBm=case_when(mgmt == "oa" ~  biomass/as.numeric(nullOA[1,"biomass"]),
+                          TRUE ~ biomass/as.numeric(nullCE[1,"biomass"])),
+         diffCtch=case_when(mgmt=="oa" ~  catch/as.numeric(nullOA[1,"catch"]),
+                          TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
+
+szMgmt03<-szMgmt02%>%
+  bind_rows(.,zeros)
+
+# open access
+
+szMgmt0BmOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(92,500))+
+  labs(x="Total farm area\n(% of sp. range)",y="Open access\n\n% biomass",title = "")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+
+szMgmt0CtchOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(15,140))+
+  labs(x="Total farm area\n(% of sp. range)",y="% catch",title = "")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+# effort @ MSY
+
+szMgmt0BmCE<-ggplot(szMgmt03[szMgmt03$mgmt=="ce",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(92,500))+
+  labs(x="",y="Constant effort\n\n% biomass",title = "Biomass")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+
+szMgmt0CtchCE<-ggplot(szMgmt03[szMgmt03$mgmt=="ce",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(15,140))+
+  labs(x="",y="% catch",title = "Catch")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+figS6Plts<-((szMgmt0BmCE + szMgmt0CtchCE)/(szMgmt0BmOA + szMgmt0CtchOA )) +
+  plot_annotation(tag_levels = 'A') + 
+  plot_layout(guides="collect")
+
+
+figS6Plts
+
+```
