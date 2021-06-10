@@ -337,7 +337,7 @@ jatt15sCE<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = r
 
 ## Equilibrium runs
 
-#### MPA size v attraction
+#### Total farm area v attraction
 
 Patch K is increased at a constant rate, 100, using the farm scenario, where attraction is tested at several levels. Solid lines are farms of size 10, dashed are one continuous protected space.
 
@@ -428,27 +428,31 @@ msAttrCExs<-msAttPlFun(mpaSzVec = seq(0.1,0.7,by=0.2),
 ```
 
 
+***
+
+#### Total farm area vs. movement rates
 
 ```{r}
 
-amFsPlFunMat<-function(amVec,farmSizeVec,mpaSz,attr,pK,mImp,farmYrsVec,mgmt){
+mpaMgmtAMPlFunMat<-function(mpaSzVec,amVec,farmSz,attr,pK,mImp,farmYrsVec){
   
-  msapDf<-expand.grid(adultMove=amVec,
-                      farmSize=farmSizeVec)%>%
+  mpaMgmtpDf<-expand.grid(mpaSz=mpaSzVec,
+                          aMove=amVec,
+                          mgmt=c("oa","ce"))%>%
     mutate(biomass=0,
            catch=0)
-  
-    if(mgmt=="oa") {fleetIn<-fleetOApv} else {fleetIn<-fleetCEpv}
 
   
-   for(j in 1:nrow(msapDf)){
+   for(i in 1:nrow(mpaMgmtpDf)){
      
-     fishPV$adult_movement<-msapDf[j,"adultMove"]
+     fleetIn<-if(mpaMgmtpDf$mgmt[i]=="oa") {fleetIn<-fleetOApv} else {fleetIn<-fleetCEpv}
+     
+     fishPV$adult_movement<-mpaMgmtpDf[i,"aMove"]
   
-  msapDf[j,c("biomass","catch")]<-sim_fisheryAqK(
+  mpaMgmtpDf[i,c("biomass","catch")]<-sim_fisheryAqK(
     fish = fishPV,
     fleet = fleetIn,
-    manager = create_manager(mpa_size = mpaSz, year_mpa = mpaYr),
+    manager = create_manager(mpa_size = mpaMgmtpDf$mpaSz[i], year_mpa = mpaYr),
     num_patches = nPatch,
     sim_years = sYrs,
     burn_years = bYrs,
@@ -458,7 +462,7 @@ amFsPlFunMat<-function(amVec,farmSizeVec,mpaSz,attr,pK,mImp,farmYrsVec,mgmt){
     min_size = 0.05,
     sprinkler = FALSE,
     keep_burn = FALSE,
-    farmSize = msapDf[j,"farmSize"],
+    farmSize = farmSz,
     farmAttr = attr,
     ddAttr = 1,
     farm_yrs = farmYrsVec,
@@ -473,73 +477,36 @@ amFsPlFunMat<-function(amVec,farmSizeVec,mpaSz,attr,pK,mImp,farmYrsVec,mgmt){
     as_vector()
    }
   
-  return(msapDf)
+  return(mpaMgmtpDf)
   
 }
 
 
-### adult movement & farm size - OA (weak management)
-amFsOAmBen<-amFsPlFunMat(amVec = seq(0,80,by=20),
-                  farmSizeVec = c(1,2,5,10,20),
-                  mpaSz = 0.2,
+### Varies total farm area (mpaSize) and is run for both OA and CE --> with benefits
+mpaMgmtAMBen<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.1,0.9,by=0.1),
                   attr = 5,
+                  amVec= c(0,3,20,60),
                   pK=ptchKp,
+                  farmSz = 5,
                   mImp=0.8, ## benefit bc decreases nat mort
-                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                  mgmt = "oa") 
+                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
 
-amFsOAmNeg<-amFsPlFunMat(amVec = seq(0,80,by=20),
-                  farmSizeVec = c(1,2,5,10,20),
-                  mpaSz = 0.2,
+mpaMgmtAMNeg<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.1,0.9,by=0.1),
                   attr = 5,
-                  pK=ptchKp,
-                  mImp=1.2, ## damage bc increases nat mort
-                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                  mgmt = "oa") 
+                  amVec= c(0,3,20,60),
+                  farmSz = 5,
+                  pK = ptchKp,
+                  mImp = 1.2, ## damage bc increases nat mort
+                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
 
-
-### adult movement & farm size - CE (strong management)
-amFsCEmBen<-amFsPlFunMat(amVec = seq(0,80,by=20),
-                  farmSizeVec = c(1,2,5,10,20),
-                  mpaSz = 0.2,
+mpaMgmtAMInert<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.1,0.9,by=0.1),
                   attr = 5,
-                  pK=ptchKp,
-                  mImp=0.8, ## benefit bc decreases nat mort
-                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                  mgmt = "ce") 
-
-amFsCEmNeg<-amFsPlFunMat(amVec = seq(0,80,by=20),
-                  farmSizeVec = c(1,2,5,10,20),
-                  mpaSz = 0.2,
-                  attr = 5,
-                  pK=ptchKp,
-                  mImp=1.2, ## damage bc increases nat mort
-                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                  mgmt = "ce") 
-
-# write_csv(amFsOAmBen,"runs/openAccess/farmEq_amFsBen.csv")
-# write_csv(amFsOAmNeg,"runs/openAccess/farmEq_amFsNeg.csv")
-# write_csv(amFsCEmBen,"runs/openAccess/farmEq_amFsBenCE.csv")
-# write_csv(amFsCEmNeg,"runs/openAccess/farmEq_amFsNegCE.csv")
+                  amVec= c(0,3,20,60),
+                  farmSz = 5,
+                  pK = ptchKp,
+                  mImp = 1, ## damage bc increases nat mort
+                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
+# write_csv(mpaMgmtAMBen,"runs/aqMS/farmEq_mpaMgmtAMBen.csv")
+# write_csv(mpaMgmtNeg,"runs/aqMS/farmEq_mpaMgmtNeg.csv")
 
 ```
-
-```{r}
-
-### High mortality: natural mortality at farms > fishing mortality
-### Not run for CE fishing
-
-### adult movement & farm size - OA
-amFsOAmKill<-amFsPlFunMat(amVec = seq(0,80,by=20),
-                  farmSizeVec = c(1,2,5,10,20),
-                  mpaSz = 0.2,
-                  attr = 5,
-                  pK=ptchKp,
-                  mImp=2, ## benefit bc decreases nat mort
-                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                  mgmt = "oa") 
-
-# write_csv(amFsOAmKill,"runs/openAccess/farmEq_amFsNegKill.csv")
-
-```
-

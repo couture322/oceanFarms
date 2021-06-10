@@ -92,27 +92,42 @@ fig1Plts<-sizeAttrCatch+sizeAttrCatchS+plot_layout(guides = "collect")+plot_anno
 
 ***
 
-## Figure 3: Equilibrium biomass and catches for different movement rates
+## Figure 3: Equilibrium biomass and catches with positive and negative impacts to wild populations
+
 
 ```{r}
 
 ### Farm size colors:
-fsCols<-c(beyonce_palette(19)[5],beyonce_palette(22)[c(2,3,5)])
-names(fsCols)<-c("20","10","5","2")
+szCols<-c(beyonce_palette(129)[c(1,2,4)],beyonce_palette(6)[5])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+names(szCols)<-c("60","20","3","0")
 
-amFsOAmBen<-read_csv("runs/openAccess/farmEq_amFsBen.csv")
+### Benefits to wild population
 
-amFsOAmBen2<-amFsOAmBen%>%
-  filter(farmSize>1)%>% ## remove smallest farms to decrease # of treatments
-  mutate(diffBm=biomass-as.numeric(nullOA[1,"biomass"]),
-         diffCtch=catch-as.numeric(nullOA[1,"catch"]))
+szMgmtBen<-read_csv("runs/aqMS/farmEq_mpaMgmtAMBen.csv")
 
+szMgmtBen2<-szMgmtBen%>%
+  mutate(diffBm=case_when(mgmt == "oa" ~  biomass/as.numeric(nullOA[1,"biomass"]),
+                          TRUE ~ biomass/as.numeric(nullCE[1,"biomass"])),
+         diffCtch=case_when(mgmt=="oa" ~  catch/as.numeric(nullOA[1,"catch"]),
+                          TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
 
-amFsBenBmOAm<-ggplot(amFsOAmBen2,aes(x=adultMove,y=diffBm,group=as.factor(farmSize),color=as.factor(farmSize)))+
+zeros<-data.frame(mpaSz=0,
+                  aMove=rep(c(0,3,20,60),2),
+                  mgmt=rep(c("oa","ce"),each=4),
+                  diffBm=1,
+                  diffCtch=1)
+
+szMgmtBen3<-szMgmtBen2%>%
+  bind_rows(.,zeros)
+
+### open access
+
+szMgmtBenCtchOA<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="oa",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
   geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
-  scale_color_manual(values = fsCols,name="Number\nof farms",labels=20/c(2,5,10,20))+
-  scale_y_continuous(limits = c(4600,25000))+
-  labs(x="",y="Biomass",title = "Biomass")+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(9,215))+
+  labs(x="",y="\n\n",title = "")+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0.5, size = 16),
         axis.text=element_text(size=12),
@@ -120,13 +135,14 @@ amFsBenBmOAm<-ggplot(amFsOAmBen2,aes(x=adultMove,y=diffBm,group=as.factor(farmSi
         legend.text = element_text(size=12),
         legend.title = element_text(size=16))
 
+### constant effort at MSY
 
-amFsbenCtchOAm<-ggplot(amFsOAmBen2,aes(x=adultMove,y=diffCtch,group=as.factor(farmSize),color=as.factor(farmSize)))+
-  geom_hline(yintercept = 0,color="gray66")+
-  geom_smooth(size=0.8,se=FALSE)+
-  scale_color_manual(values = fsCols,name="Number\nof farms",labels=20/c(2,5,10,20))+
-  scale_y_continuous(limits = c(-400,1850))+
-  labs(x="",y="Catch biomass",title = "Catch")+
+szMgmtBenCtchCE<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="ce",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(9,215))+
+  labs(x="",y="\n\n",title = "Positive impacts\n")+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0.5, size = 16),
         axis.text=element_text(size=12),
@@ -134,63 +150,63 @@ amFsbenCtchOAm<-ggplot(amFsOAmBen2,aes(x=adultMove,y=diffCtch,group=as.factor(fa
         legend.text = element_text(size=12),
         legend.title = element_text(size=16))
 
-
-goodPlt<-amFsBenBmOAm + amFsbenCtchOAm
+goodPlt<-szMgmtBenCtchOA + szMgmtBenCtchCE
   # plot_annotation(title = "Adult movement by number of farms - benefits", theme = theme(plot.title = element_text(size = 18)))
 
 ```
 
 ```{r fig.height=8}
 
-amFsOAmNeg<-read_csv("runs/openAccess/farmEq_amFsNeg.csv")
+### Stress/damage to wild population
 
-amFsOAmNeg2<-amFsOAmNeg%>%
-  filter(farmSize>1)%>% ## remove smallest farms to decrease # of treatments
-  mutate(diffBm=biomass-as.numeric(nullOA[1,"biomass"]),
-         diffCtch=catch-as.numeric(nullOA[1,"catch"]))
+szMgmtNeg<-read_csv("runs/aqMS/farmEq_mpaMgmtAMNeg.csv")
 
-amFsNegBmOAm<-ggplot(amFsOAmNeg2,aes(x=adultMove,y=diffBm,group=as.factor(farmSize),color=as.factor(farmSize)))+
+szMgmtNeg2<-szMgmtNeg%>%
+  mutate(diffBm=case_when(mgmt == "oa" ~  biomass/as.numeric(nullOA[1,"biomass"]),
+                          TRUE ~ biomass/as.numeric(nullCE[1,"biomass"])),
+         diffCtch=case_when(mgmt=="oa" ~  catch/as.numeric(nullOA[1,"catch"]),
+                          TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
+
+szMgmtNeg3<-szMgmtNeg2%>%
+  bind_rows(.,zeros)
+
+### Open access
+
+szMgmtNegCtchOA<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="oa",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
   geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
-  scale_color_manual(values = fsCols,name="Number\nof farms",labels=20/c(2,5,10,20))+
-  scale_y_continuous(limits = c(4600,25000))+
-  labs(x="",y="Biomass")+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(9,215))+
+  labs(x="",y="\n\n",title = "")+
   theme_bw()+
-  theme(plot.title = element_text(hjust = 0.5),legend.position = "none",
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
         axis.text=element_text(size=12),
         axis.title = element_text(size=16),
         legend.text = element_text(size=12),
         legend.title = element_text(size=16))
 
 
-amFsNegCtchOAm<-ggplot(amFsOAmNeg2,aes(x=adultMove,y=diffCtch,group=as.factor(farmSize),color=as.factor(farmSize)))+
-  geom_hline(yintercept = 0,color="gray66")+
+#constant effort at MSY
+
+szMgmtNegCtchCE<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="ce",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
   geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
-  scale_color_manual(values = fsCols,name="Number\nof farms",labels=20/c(2,5,10,20))+
-  scale_y_continuous(limits = c(-400,1850))+
-  labs(x="",y="Catch biomass")+
+  scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(9,215))+
+  labs(x="",y="\n\n",title = "Negative impacts\n")+
   theme_bw()+
-  theme(plot.title = element_text(hjust = 0.5),
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
         axis.text=element_text(size=12),
         axis.title = element_text(size=16),
         legend.text = element_text(size=12),
         legend.title = element_text(size=16))
 
-
-badPlt<-amFsNegBmOAm + amFsNegCtchOAm + plot_layout(guides = "collect")
-
-fig2Plts<-(amFsBenBmOAm + amFsbenCtchOAm)/(amFsNegBmOAm + amFsNegCtchOAm ) +
+fig3Plts<-((szMgmtBenCtchCE + szMgmtNegCtchCE)/(szMgmtBenCtchOA + szMgmtNegCtchOA )) +
   plot_annotation(tag_levels = 'A') + 
   plot_layout(guides="collect")
 
-### combined x-lab
-x_lab2 <- 
-  ggplot() + 
-  annotate(geom = "text", x = 1, y = 1, label = "Adult movement", size=6) +
-  theme_void()
 
-
-fig2Plts
-
+fig3Plts
 # (fig2Plts/x_lab2) + plot_layout(heights = c(1,0.05))
 
 ```
