@@ -2,10 +2,10 @@
 title: "Farm MS figures"
 author: "Jessica L. Couture"
 output:
-  pdf_document: default
   html_document:
     code_folding: hide
     fig_width: 12
+  pdf_document: default
 ---
 
 
@@ -13,11 +13,11 @@ output:
 knitr::opts_chunk$set(echo = TRUE,warning=FALSE,message=FALSE)
 
 library(tidyverse)
-library(spasm)
+# library(spasm)
 library(patchwork)
 library(paletteer)
 library(knitr)
-library(beyonce)
+# library(beyonce)
 
 ```
 
@@ -32,6 +32,8 @@ Figures for ocean aquaculture impacts manuscript. First, one to define the model
 Attraction is varied and benefits from the farm are included but held constant. The committee liked the catches plot since it was most dynamic, but wanted it pulled apart to make the message that breaking the farms up into smaller spaces makes a difference, so this figure will have 2 panels, one with one large farm (A) and a second with farms broken up into smaller spaces (B). 
 
 ```{r fig.height=5}
+
+### Weak fishery management
 
 msAttrOA<-read_csv("runs/openAccess/farmEq_msAttrOALg.csv")
 
@@ -50,7 +52,10 @@ msAttrOAxs2<-msAttrOAxs%>%
 
 ### plot mpaSize by attraction
 
-attrCols<-beyonce_palette(19)[c(5,2:4)]
+# attrCols<-beyonce_palette(19)[c(5,2:4)]
+
+attrCols<-paletteer_d("beyonce::X19")[c(5,2:4)] # edit bc beyonce package doesn't work for this updated R version. Paletteer works th
+
 names(attrCols)<-c("1","3","9","15")
 
 sizeAttrCatch<-ggplot(msAttrOA2,aes(x=mpaSize,y=diffCtch,group=as.factor(attr),color=as.factor(attr)))+
@@ -87,7 +92,69 @@ x_lab <-
 
 fig1Plts<-sizeAttrCatch+sizeAttrCatchS+plot_layout(guides = "collect")+plot_annotation(tag_levels = "A", theme = theme(plot.title = element_text(size = 18)))
 
-(fig1Plts/x_lab) + plot_layout(heights = c(1,0.05))
+# (fig1Plts/x_lab) + plot_layout(heights = c(1,0.05))
+
+```
+
+```{r fig.height=8}
+
+### Strong fishery management
+
+msAttrCE<-read_csv("runs/constantEffortMSY/farmEq_msAttCE.csv")
+# msAttrOAs<-read_csv("runs/aqMS/farmEq_msAttrOASm.csv") # 2 farms at 10 patches each
+msAttrCExs<-read_csv("runs/constantEffortMSY/farmEq_msAttCEsm.csv") # 4 farms at 5 patches each
+
+nullCE<-read_csv("runs/constantEffortMSY/nullCE.csv")
+
+# nullCE<-read_csv("runs/aqMS/nullCE.csv")
+
+msAttrCE2<-msAttrCE%>%
+  mutate(diffBm=biomass/as.numeric(nullCE[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullCE[1,"catch"]))
+
+msAttrCExs2<-msAttrCExs%>%
+  mutate(diffBm=biomass/as.numeric(nullCE[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullCE[1,"catch"]))
+
+### plot mpaSize by attraction
+
+sizeAttrCatchCE<-ggplot(msAttrCE2,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(size=0.8,se=FALSE)+
+  #geom_point()+
+  labs(title = "One large farm",y="Catch (% relative to no farm)",x="")+
+  scale_y_continuous(limits = c(0,150))+
+  scale_x_continuous(breaks = seq(0.2,0.8,by=0.2),labels = seq(0.2,0.8,by=0.2)*100)+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16),
+        plot.title = element_text(size=20))
+
+sizeAttrCatchSce<-ggplot()+ ## replaced sm with xsm to excentuate differences (smaller farms)
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_smooth(data=msAttrCExs2,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
+  labs(title = "Several smaller farms",y="",x="")+
+  scale_y_continuous(limits = c(0,150))+
+  scale_x_continuous(breaks = seq(0.2,0.8,by=0.2),labels = seq(0.2,0.8,by=0.2)*100)+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16),
+        plot.title = element_text(size=20))
+
+fig1PltsCE<-sizeAttrCatchCE+sizeAttrCatchSce+plot_layout(guides = "collect")+plot_annotation(tag_levels = "A", theme = theme(plot.title = element_text(size = 18)))
+
+fig2quad<-(sizeAttrCatchCE+sizeAttrCatchSce)/(sizeAttrCatch+sizeAttrCatchS)+
+  plot_layout(guides = "collect")+
+  plot_annotation(tag_levels = "A")&
+    theme(plot.tag = element_text(face = 'bold'))
+
+fig2quad
 
 ```
 
@@ -101,7 +168,10 @@ Relative differences in catch biomass compared to no farm over a range of total 
 ```{r}
 
 ### Farm size colors:
-szCols<-c(beyonce_palette(129)[c(1,2,4)],beyonce_palette(6)[5])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+# szCols<-c(beyonce_palette(129)[c(1,2,4)],beyonce_palette(6)[5])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+
+szCols<-c(paletteer_d("beyonce::X129")[c(1,2,4)], paletteer_d("beyonce::X6")[5])# edit bc beyonce package doesn't work for this updated R version. Paletteer works th
+
 names(szCols)<-c("60","20","3","0")
 
 ### control CE data
