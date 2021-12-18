@@ -445,7 +445,7 @@ msAttrOAxs_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
 
 ### one large area - CE
 msAttrCE_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
-                     attrVec = c(10,100,1000),
+                     attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
                      farmSz = NA,
@@ -453,7 +453,7 @@ msAttrCE_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
 
 ### several small areas - CE
 msAttrCExs_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
-                     attrVec = c(10,100,1000),
+                     attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
                      farmSz = 5,
@@ -576,7 +576,8 @@ mpaMgmtAMInert_20<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.2,by=0.05),
                   pK = ptchKp,
                   mImp = 1, ## damage bc increases nat mort
                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
-# write_csv(mpaMgmtAMBen_20,"runs/aqMS/farmEq_mpaMgmtAMBen_20.csv")
-# write_csv(mpaMgmtNeg_20,"runs/aqMS/farmEq_mpaMgmtNeg_20.csv")
+# write_csv(mpaMgmtAMBen_20,"runs/movement/farmEq_mpaMgmtAMBen_20.csv")
+# write_csv(mpaMgmtAMNeg_20,"runs/movement/farmEq_mpaMgmtAMNeg_20.csv")
+write_csv(mpaMgmtAMInert_20,"runs/movement/farmEq_mpaMgmtAM0_20.csv")
 
 ```
