@@ -13,11 +13,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE,warning=FALSE,message=FALSE)
 
 library(tidyverse)
-# library(spasm)
 library(patchwork)
 library(paletteer)
 library(knitr)
-# library(beyonce)
 
 ```
 
@@ -33,7 +31,7 @@ Attraction is varied and benefits from the farm are included but held constant. 
 
 ```{r fig.height=5}
 
-zerosDf<-data.frame(mpaSize=c(0,0,0,0),attr=c(1,3,9,15),biomass=c(NA,NA,NA,NA),catch=c(NA,NA,NA,NA),diffBm=c(NA,NA,NA,NA),diffCtch=c(0,0,0,0))
+zerosDf<-data.frame(mpaSize=c(0,0,0,0),attr=c(1,3,9,15),biomass=c(NA,NA,NA,NA),catch=c(NA,NA,NA,NA),diffBm=c(NA,NA,NA,NA),diffCtch=c(1,1,1,1))
 
 ### Weak fishery management
 
@@ -45,14 +43,14 @@ nullOA<-read_csv("runs/openAccess/nullOA.csv")
 
 ### Calculate biomass and catch differences 
 msAttrOA2<-msAttrOA%>%
-  mutate(diffBm=biomass-as.numeric(nullOA[1,"biomass"]),
-         diffCtch=catch-as.numeric(nullOA[1,"catch"]))%>%
+  mutate(diffBm=biomass/as.numeric(nullOA[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullOA[1,"catch"]))%>%
   filter(mpaSize<=0.2)%>%
   bind_rows(zerosDf,.)
 
 msAttrOAxs2<-msAttrOAxs%>%
-  mutate(diffBm=biomass-as.numeric(nullOA[1,"biomass"]),
-         diffCtch=catch-as.numeric(nullOA[1,"catch"]))%>%
+  mutate(diffBm=biomass/as.numeric(nullOA[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullOA[1,"catch"]))%>%
   filter(mpaSize<=0.2)%>%
   bind_rows(zerosDf,.)
 
@@ -64,12 +62,12 @@ attrCols<-paletteer_d("beyonce::X19")[c(5,2:4)] # edit bc beyonce package doesn'
 
 names(attrCols)<-c("1","3","9","15")
 
-sizeAttrCatch<-ggplot(msAttrOA2,aes(x=mpaSize,y=diffCtch,group=as.factor(attr),color=as.factor(attr)))+
+sizeAttrCatch<-ggplot(msAttrOA2,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)))+
   geom_hline(yintercept = 0,color="gray66")+
   # geom_line(size=0.8)+
   geom_smooth(size=0.8,se=FALSE)+
   labs(title = "One large farm",y="Catch biomass",x="")+
-  scale_y_continuous(limits = c(0,800))+
+  scale_y_continuous(limits = c(25,130))+
   scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
   theme_bw()+
@@ -79,11 +77,11 @@ sizeAttrCatch<-ggplot(msAttrOA2,aes(x=mpaSize,y=diffCtch,group=as.factor(attr),c
         legend.title = element_text(size=16))
 
 sizeAttrCatchS<-ggplot()+ ## replaced sm with xsm to accentuate differences (smaller farms)
-  geom_hline(yintercept = 0,color="gray66")+
+  geom_hline(yintercept = 100,color="gray66")+
   # geom_line(data=msAttrOAxs2,aes(x=mpaSize,y=diffCtch,group=as.factor(attr),color=as.factor(attr)),size=0.8)+
-  geom_smooth(data=msAttrOAxs2,aes(x=mpaSize,y=diffCtch,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
+  geom_smooth(data=msAttrOAxs2,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
   labs(title = "Several smaller farms",y="",x="")+
-  scale_y_continuous(limits = c(0,800))+
+  scale_y_continuous(limits = c(25,130))+
   scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
   theme_bw()+
@@ -100,7 +98,7 @@ x_lab <-
 
 fig1Plts<-sizeAttrCatch+sizeAttrCatchS+plot_layout(guides = "collect")+plot_annotation(tag_levels = "A", theme = theme(plot.title = element_text(size = 18)))
 
-(fig1Plts/x_lab) + plot_layout(heights = c(1,0.05))
+# (fig1Plts/x_lab) + plot_layout(heights = c(1,0.05))
 
 ```
 
@@ -131,7 +129,7 @@ sizeAttrCatchCE<-ggplot(msAttrCE2,aes(x=mpaSize,y=diffCtch*100,group=as.factor(a
   geom_smooth(size=0.8,se=FALSE)+
   #geom_point()+
   labs(title = "One large farm",y="Catch (% relative to no farm)",x="")+
-  scale_y_continuous(limits = c(0,150))+
+  scale_y_continuous(limits = c(25,130))+
   scale_x_continuous(breaks = seq(0.2,0.8,by=0.2),labels = seq(0.2,0.8,by=0.2)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
   theme_bw()+
@@ -145,7 +143,7 @@ sizeAttrCatchSce<-ggplot()+ ## replaced sm with xsm to excentuate differences (s
   geom_hline(yintercept = 100,color="gray66")+
   geom_smooth(data=msAttrCExs2,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
   labs(title = "Several smaller farms",y="",x="")+
-  scale_y_continuous(limits = c(0,150))+
+  scale_y_continuous(limits = c(25,130))+
   scale_x_continuous(breaks = seq(0.2,0.8,by=0.2),labels = seq(0.2,0.8,by=0.2)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
   theme_bw()+
@@ -163,6 +161,121 @@ fig2quad<-(sizeAttrCatchCE+sizeAttrCatchSce)/(sizeAttrCatch+sizeAttrCatchS)+
     theme(plot.tag = element_text(face = 'bold'))
 
 fig2quad
+
+```
+
+## Figure 2b: truncate and zoom into 0-20% farms
+
+```{r fig.height=5}
+
+### Weak fishery management
+
+msAttrOA20<-read_csv("runs/openAccess/farmEq_msAttOALg_20.csv")
+
+msAttrOAxs20<-read_csv("runs/openAccess/farmEq_msAttOAXSm_20.csv") # 4 farms at 5 patches each
+
+### Calculate biomass and catch differences 
+msAttrOA202<-msAttrOA20%>%
+  mutate(diffBm=biomass/as.numeric(nullOA[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullOA[1,"catch"]))%>%
+  bind_rows(zerosDf,.)
+
+msAttrOAxs202<-msAttrOAxs20%>%
+  mutate(diffBm=biomass/as.numeric(nullOA[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullOA[1,"catch"]))%>%
+  bind_rows(zerosDf,.)
+
+### plot mpaSize by attraction
+
+sizeAttrCatch20<-ggplot(msAttrOA202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_line(size=0.8)+
+  # geom_smooth(size=0.8,se=FALSE)+
+  labs(title = "One large farm",y="Catch biomass",x="")+
+  scale_y_continuous(limits = c(55,135))+
+  scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+sizeAttrCatchS20<-ggplot()+ ## replaced sm with xsm to accentuate differences (smaller farms)
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_line(data=msAttrOAxs202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8)+
+  # geom_smooth(data=msAttrOAxs202,aes(x=mpaSize,y=diffCtch,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
+  labs(title = "Several smaller farms",y="",x="")+
+  scale_y_continuous(limits = c(55,135))+
+  scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+fig1Plts20<-sizeAttrCatch20+sizeAttrCatchS20+plot_layout(guides = "collect")+plot_annotation(tag_levels = "A", theme = theme(plot.title = element_text(size = 18)))
+
+################################
+### Strong fishery management
+
+msAttrCE20<-read_csv("runs/constantEffortMSY/farmEq_msAttCELg_20.csv")
+# msAttrOAs<-read_csv("runs/aqMS/farmEq_msAttrOASm.csv") # 2 farms at 10 patches each
+msAttrCExs20<-read_csv("runs/constantEffortMSY/farmEq_msAttCEXsm_20.csv") # 4 farms at 5 patches each
+
+
+msAttrCE202<-msAttrCE20%>%
+  mutate(diffBm=biomass/as.numeric(nullCE[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullCE[1,"catch"]))%>%
+  bind_rows(zerosDf,.)
+
+msAttrCExs202<-msAttrCExs20%>%
+  mutate(diffBm=biomass/as.numeric(nullCE[1,"biomass"]),
+         diffCtch=catch/as.numeric(nullCE[1,"catch"]))%>%
+  bind_rows(zerosDf,.)
+
+### plot mpaSize by attraction
+
+sizeAttrCatchCE20<-ggplot(msAttrCE202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_line(size=0.8)+
+  # geom_smooth(size=0.8,se=FALSE)+
+  #geom_point()+
+  labs(title = "One large farm",y="Catch (% relative to no farm)",x="")+
+  scale_y_continuous(limits = c(55,135))+
+  scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16),
+        plot.title = element_text(size=20))
+
+sizeAttrCatchSce20<-ggplot()+ ## replaced sm with xsm to excentuate differences (smaller farms)
+  geom_hline(yintercept = 100,color="gray66")+
+  geom_line(data=msAttrCExs202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8)+
+  # geom_smooth(data=msAttrCExs202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
+  labs(title = "Several smaller farms",y="",x="")+
+  scale_y_continuous(limits = c(55,135))+
+  scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
+  scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
+  theme_bw()+
+    theme(axis.text=element_text(size=12),
+          axis.title = element_text(size=16),
+          legend.text = element_text(size=12),
+        legend.title = element_text(size=16),
+        plot.title = element_text(size=20))
+
+fig1PltsCE20<-sizeAttrCatchCE20+sizeAttrCatchSce20+plot_layout(guides = "collect")+plot_annotation(tag_levels = "A", theme = theme(plot.title = element_text(size = 18)))
+
+fig2quad20<-(sizeAttrCatchCE20+sizeAttrCatchSce20)/(sizeAttrCatch20+sizeAttrCatchS20)+
+  plot_layout(guides = "collect")+
+  plot_annotation(tag_levels = "A")&
+    theme(plot.tag = element_text(face = 'bold'))
+
+fig2quad20
 
 ```
 
