@@ -578,6 +578,6 @@ mpaMgmtAMInert_20<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.2,by=0.05),
                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
 # write_csv(mpaMgmtAMBen_20,"runs/movement/farmEq_mpaMgmtAMBen_20.csv")
 # write_csv(mpaMgmtAMNeg_20,"runs/movement/farmEq_mpaMgmtAMNeg_20.csv")
-write_csv(mpaMgmtAMInert_20,"runs/movement/farmEq_mpaMgmtAM0_20.csv")
+# write_csv(mpaMgmtAMInert_20,"runs/movement/farmEq_mpaMgmtAM0_20.csv")
 
 ```
