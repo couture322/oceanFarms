@@ -425,10 +425,10 @@ msAttPlFun<-function(mpaSzVec,attrVec,pK,farmYrsVec,farmSz,mgmt){
 # # write_csv(msAttrCE,"runs/constantEffortMSY/farmEq_msAttCELg.csv")
 # # write_csv(msAttrCExs,"runs/constantEffortMSY/farmEq_msAttCEXSm.csv")
 
-##### re-running limiting total farm area to 20% but doubling the granularity to 5% increments instead of 10%
+##### re-running limiting total farm area to 40% but doubling the granularity to 5% increments instead of 10%
 
 ### one large area - OA
-msAttrOA_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
+msAttrOA_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
@@ -436,7 +436,7 @@ msAttrOA_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
                      mgmt = "oa")
 
 ### several smaller areas - OA
-msAttrOAxs_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
+msAttrOAxs_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
@@ -444,7 +444,7 @@ msAttrOAxs_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
                      mgmt = "oa")
 
 ### one large area - CE
-msAttrCE_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
+msAttrCE_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
@@ -452,18 +452,18 @@ msAttrCE_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
                      mgmt = "ce")
 
 ### several small areas - CE
-msAttrCExs_20<-msAttPlFun(mpaSzVec = seq(0.05,0.2,by=0.05),
+msAttrCExs_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
                      farmSz = 5,
                      mgmt = "ce")
 
-# write_csv(msAttrOA_20,"runs/openAccess/farmEq_msAttOALg_20.csv")
-# write_csv(msAttrOAxs_20,"runs/openAccess/farmEq_msAttOAXSm_20.csv")
-# 
-# write_csv(msAttrCE_20,"runs/constantEffortMSY/farmEq_msAttCELg_20.csv")
-# write_csv(msAttrCExs_20,"runs/constantEffortMSY/farmEq_msAttCEXSm_20.csv")
+write_csv(msAttrOA_40,"runs/openAccess/farmEq_msAttOALg_40.csv")
+write_csv(msAttrOAxs_40,"runs/openAccess/farmEq_msAttOAXSm_40.csv")
+
+write_csv(msAttrCE_40,"runs/constantEffortMSY/farmEq_msAttCELg_40.csv")
+write_csv(msAttrCExs_40,"runs/constantEffortMSY/farmEq_msAttCEXSm_40.csv")
 
 
 ```
@@ -553,7 +553,7 @@ mpaMgmtAMPlFunMat<-function(mpaSzVec,amVec,farmSz,attr,pK,mImp,farmYrsVec){
 
 ##### re-running limiting total farm area to 20% but doubling the granularity to 5% increments instead of 10%
 
-mpaMgmtAMBen_20<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.2,by=0.05),
+mpaMgmtAMBen_40<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.4,by=0.05),
                   attr = 5,
                   amVec= c(0,3,20,60),
                   pK=ptchKp,
@@ -561,7 +561,7 @@ mpaMgmtAMBen_20<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.2,by=0.05),
                   mImp=0.8, ## benefit bc decreases nat mort
                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
 
-mpaMgmtAMNeg_20<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.2,by=0.05),
+mpaMgmtAMNeg_40<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.4,by=0.05),
                   attr = 5,
                   amVec= c(0,3,20,60),
                   farmSz = 5,
@@ -569,15 +569,15 @@ mpaMgmtAMNeg_20<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.2,by=0.05),
                   mImp = 1.2, ## damage bc increases nat mort
                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
 
-mpaMgmtAMInert_20<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.2,by=0.05),
+mpaMgmtAMInert_40<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.4,by=0.05),
                   attr = 5,
                   amVec= c(0,3,20,60),
                   farmSz = 5,
                   pK = ptchKp,
                   mImp = 1, ## damage bc increases nat mort
                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
-# write_csv(mpaMgmtAMBen_20,"runs/movement/farmEq_mpaMgmtAMBen_20.csv")
-# write_csv(mpaMgmtAMNeg_20,"runs/movement/farmEq_mpaMgmtAMNeg_20.csv")
-# write_csv(mpaMgmtAMInert_20,"runs/movement/farmEq_mpaMgmtAM0_20.csv")
+# write_csv(mpaMgmtAMBen_40,"runs/movement/farmEq_mpaMgmtAMBen_40.csv")
+# write_csv(mpaMgmtAMNeg_40,"runs/movement/farmEq_mpaMgmtAMNeg_40.csv")
+# write_csv(mpaMgmtAMInert_40,"runs/movement/farmEq_mpaMgmtAM0_40.csv")
 
 ```
