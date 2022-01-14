@@ -459,11 +459,11 @@ msAttrCExs_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      farmSz = 5,
                      mgmt = "ce")
 
-write_csv(msAttrOA_40,"runs/openAccess/farmEq_msAttOALg_40.csv")
-write_csv(msAttrOAxs_40,"runs/openAccess/farmEq_msAttOAXSm_40.csv")
-
-write_csv(msAttrCE_40,"runs/constantEffortMSY/farmEq_msAttCELg_40.csv")
-write_csv(msAttrCExs_40,"runs/constantEffortMSY/farmEq_msAttCEXSm_40.csv")
+# write_csv(msAttrOA_40,"runs/openAccess/farmEq_msAttOALg_40.csv")
+# write_csv(msAttrOAxs_40,"runs/openAccess/farmEq_msAttOAXSm_40.csv")
+# 
+# write_csv(msAttrCE_40,"runs/constantEffortMSY/farmEq_msAttCELg_40.csv")
+# write_csv(msAttrCExs_40,"runs/constantEffortMSY/farmEq_msAttCEXSm_40.csv")
 
 
 ```
