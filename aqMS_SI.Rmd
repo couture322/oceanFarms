@@ -13,11 +13,9 @@ output:
 knitr::opts_chunk$set(echo = FALSE,warning=FALSE,message=FALSE)
 
 library(tidyverse)
-library(spasm)
 library(patchwork)
 library(paletteer)
 library(knitr)
-library(beyonce)
 
 ```
 
@@ -32,12 +30,15 @@ Farm impacts over time for a high value open access fishery. In each plot the le
 ### Color palettes
 
 ### Attraction values
-attrCols<-beyonce_palette(19)[c(5,2:4)]#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+# attrCols<-beyonce_palette(19)[c(5,2:4)]#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+attrCols<-paletteer_d("beyonce::X19")[c(5,2:4)] # edit bc beyonce package doesn't work for this updated R version. Paletteer works th
+
 names(attrCols)<-c("1","3","9","15")
 
 
 ### Farm size colors
-fsCols<-c(beyonce_palette(19)[5],beyonce_palette(22)[c(2,3,5)])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+# fsCols<-c(beyonce_palette(19)[5],beyonce_palette(22)[c(2,3,5)])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+fsCols<-c(paletteer_d("beyonce::X19")[5], paletteer_d("beyonce::X22")[c(2,3,5)])# edit bc beyonce package doesn't work for this updated R version. Paletteer works th
 names(fsCols)<-c("20","10","5","2")
 
 
@@ -251,11 +252,13 @@ nullCE<-read_csv("runs/constantEffortMSY/nullCE.csv")
 
 msAttrCE2<-msAttrCE%>%
   mutate(diffBm=biomass/as.numeric(nullCE[1,"biomass"]),
-         diffCtch=catch/as.numeric(nullCE[1,"catch"]))
+         diffCtch=catch/as.numeric(nullCE[1,"catch"]))%>%
+  filter(mpaSize<0.5)
 
 msAttrCExs2<-msAttrCExs%>%
   mutate(diffBm=biomass/as.numeric(nullCE[1,"biomass"]),
-         diffCtch=catch/as.numeric(nullCE[1,"catch"]))
+         diffCtch=catch/as.numeric(nullCE[1,"catch"]))%>%
+  filter(mpaSize<0.5)
 
 ### plot mpaSize by attraction
 
@@ -351,7 +354,9 @@ Relative differences in total biomass compared to no farm over a range of total 
 ```{r}
 
 ### Farm size colors:
-szCols<-c(beyonce_palette(129)[c(1,2,4)],beyonce_palette(6)[5])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+# szCols<-c(beyonce_palette(129)[c(1,2,4)],beyonce_palette(6)[5])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+
+szCols<-c(paletteer_d("beyonce::X129")[c(1,2,4)], paletteer_d("beyonce::X6")[5])# edit bc beyonce package doesn't work for this updated R version. Paletteer works th
 names(szCols)<-c("60","20","3","0")
 
 szMgmtBen<-read_csv("runs/movement/farmEq_mpaMgmtAMBen.csv")
@@ -369,15 +374,16 @@ zeros<-data.frame(mpaSz=0,
                   diffCtch=1)
 
 szMgmtBen3<-szMgmtBen2%>%
-  bind_rows(.,zeros)
+  bind_rows(.,zeros)%>%
+  filter(mpaSz<0.5)
 
 
 szMgmtBenBmOA<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="oa",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  geom_line(size=0.8)+
   scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
-  scale_y_continuous(limits = c(50,805))+
-  labs(x="Total farm area\n(% of sp. range)",y="Open access\n\n% biomass",title = "")+
+  scale_y_continuous(limits = c(0,400))+
+  labs(x="Total farm area",y="Open access\n\n% biomass",title = "")+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0.5, size = 16),
         axis.text=element_text(size=12),
@@ -388,9 +394,9 @@ szMgmtBenBmOA<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="oa",],aes(x=mpaSz*100,y=diffB
 
 szMgmtBenBmCE<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="ce",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  geom_line(size=0.8)+
   scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
-  scale_y_continuous(limits = c(50,805))+
+  scale_y_continuous(limits = c(0,400))+
   labs(x="",y="Constant effort\n\n% biomass",title = "Positive impacts\n")+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0.5, size = 16),
@@ -412,15 +418,17 @@ szMgmtNeg2<-szMgmtNeg%>%
                           TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
 
 szMgmtNeg3<-szMgmtNeg2%>%
-  bind_rows(.,zeros)
+  bind_rows(.,zeros)%>%
+  filter(mpaSz<0.5)
 
 
 szMgmtNegBmOA<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="oa",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  #geom_smooth(size=0.8,se=FALSE)+#
+  geom_line(size=0.8)+
   scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
-  scale_y_continuous(limits = c(50,805))+
-  labs(x="Total farm area\n(% of sp. range)",y="",title = "")+
+  scale_y_continuous(limits = c(0,400))+
+  labs(x="Total farm area",y="",title = "")+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0.5, size = 16),
         axis.text=element_text(size=12),
@@ -431,9 +439,10 @@ szMgmtNegBmOA<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="oa",],aes(x=mpaSz*100,y=diffB
 
 szMgmtNegBmCE<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="ce",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  #geom_smooth(size=0.8,se=FALSE)+
+  geom_line(size=0.8)+
   scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
-  scale_y_continuous(limits = c(50,805))+
+  scale_y_continuous(limits = c(0,400))+
   labs(x="",y="",title = "Negative impacts\n")+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0.5, size = 16),
@@ -469,16 +478,18 @@ szMgmt02<-szMgmt0%>%
                           TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
 
 szMgmt03<-szMgmt02%>%
-  bind_rows(.,zeros)
+  bind_rows(.,zeros)%>%
+  filter(mpaSz<0.5)
 
 # open access
 
 szMgmt0BmOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  # geom_smooth(size=0.8,se=FALSE)+#
+  geom_line(size=0.8)+
   scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
   scale_y_continuous(limits = c(92,500))+
-  labs(x="Total farm area\n(% of sp. range)",y="Open access\n\n% biomass",title = "")+
+  labs(x="Total farm area",y="Open access\n\n% biomass",title = "")+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0.5, size = 16),
         axis.text=element_text(size=12),
@@ -489,10 +500,11 @@ szMgmt0BmOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffBm*100,
 
 szMgmt0CtchOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  # geom_smooth(size=0.8,se=FALSE)+#
+  geom_line(size=0.8)+
   scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
   scale_y_continuous(limits = c(15,140))+
-  labs(x="Total farm area\n(% of sp. range)",y="% catch",title = "")+
+  labs(x="Total farm area",y="% catch",title = "")+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0.5, size = 16),
         axis.text=element_text(size=12),
@@ -504,7 +516,8 @@ szMgmt0CtchOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffCtch*
 
 szMgmt0BmCE<-ggplot(szMgmt03[szMgmt03$mgmt=="ce",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  # geom_smooth(size=0.8,se=FALSE)+#
+  geom_line(size=0.8)+
   scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
   scale_y_continuous(limits = c(92,500))+
   labs(x="",y="Constant effort\n\n% biomass",title = "Biomass")+
@@ -518,7 +531,8 @@ szMgmt0BmCE<-ggplot(szMgmt03[szMgmt03$mgmt=="ce",],aes(x=mpaSz*100,y=diffBm*100,
 
 szMgmt0CtchCE<-ggplot(szMgmt03[szMgmt03$mgmt=="ce",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_smooth(size=0.8,se=FALSE)+#geom_line(size=0.8)+
+  # geom_smooth(size=0.8,se=FALSE)+#
+  geom_line(size=0.8)+
   scale_color_manual(values = szCols,name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
   scale_y_continuous(limits = c(15,140))+
   labs(x="",y="% catch",title = "Catch")+

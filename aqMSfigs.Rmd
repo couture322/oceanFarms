@@ -191,7 +191,7 @@ sizeAttrCatch20<-ggplot(msAttrOA202,aes(x=mpaSize,y=diffCtch*100,group=as.factor
   geom_hline(yintercept = 100,color="gray66")+
   geom_line(size=0.8)+
   # geom_smooth(size=0.8,se=FALSE)+
-  labs(title = "One large farm",y="Catch biomass",x="")+
+  labs(y="\n\n",x="")+
   scale_y_continuous(limits = c(55,135))+
   scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
@@ -205,7 +205,7 @@ sizeAttrCatchS20<-ggplot()+ ## replaced sm with xsm to accentuate differences (s
   geom_hline(yintercept = 100,color="gray66")+
   geom_line(data=msAttrOAxs202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8)+
   # geom_smooth(data=msAttrOAxs202,aes(x=mpaSize,y=diffCtch,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
-  labs(title = "Several smaller farms",y="",x="")+
+   labs(y="\n\n",x="")+
   scale_y_continuous(limits = c(55,135))+
   scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
@@ -242,7 +242,7 @@ sizeAttrCatchCE20<-ggplot(msAttrCE202,aes(x=mpaSize,y=diffCtch*100,group=as.fact
   geom_line(size=0.8)+
   # geom_smooth(size=0.8,se=FALSE)+
   #geom_point()+
-  labs(title = "One large farm",y="Catch (% relative to no farm)",x="")+
+   labs(y="\n\n",x="")+
   scale_y_continuous(limits = c(55,135))+
   scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
@@ -257,7 +257,7 @@ sizeAttrCatchSce20<-ggplot()+ ## replaced sm with xsm to excentuate differences 
   geom_hline(yintercept = 100,color="gray66")+
   geom_line(data=msAttrCExs202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8)+
   # geom_smooth(data=msAttrCExs202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
-  labs(title = "Several smaller farms",y="",x="")+
+   labs(y="\n\n",x="")+
   scale_y_continuous(limits = c(55,135))+
   scale_x_continuous(breaks = seq(0,0.2,by=0.05),labels = seq(0,0.2,by=0.05)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
