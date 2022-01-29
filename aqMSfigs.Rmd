@@ -61,12 +61,12 @@ msAttrOAxs402<-msAttrOAxs40%>%
 
 ### plot mpaSize by attraction
 
-sizeAttrCatch40<-ggplot(msAttrOA202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)))+
+sizeAttrCatch40<-ggplot(msAttrOA402,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_line(size=0.8)+
-  # geom_smooth(size=0.8,se=FALSE)+
+  # geom_line(size=0.8)+
+  geom_smooth(size=0.8,se=FALSE)+
   labs(y="\n\n",x="")+
-  scale_y_continuous(limits = c(55,135))+
+  scale_y_continuous(limits = c(40,135))+
   scale_x_continuous(breaks = seq(0,0.4,by=0.1),labels = seq(0,0.4,by=0.1)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
   theme_bw()+
@@ -77,10 +77,10 @@ sizeAttrCatch40<-ggplot(msAttrOA202,aes(x=mpaSize,y=diffCtch*100,group=as.factor
 
 sizeAttrCatchS40<-ggplot()+ ## replaced sm with xsm to accentuate differences (smaller farms)
   geom_hline(yintercept = 100,color="gray66")+
-  geom_line(data=msAttrOAxs402,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8)+
-  # geom_smooth(data=msAttrOAxs202,aes(x=mpaSize,y=diffCtch,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
+  # geom_line(data=msAttrOAxs402,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8)+
+  geom_smooth(data=msAttrOAxs402,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
    labs(y="\n\n",x="")+
-  scale_y_continuous(limits = c(55,135))+
+  scale_y_continuous(limits = c(40,135))+
   scale_x_continuous(breaks = seq(0,0.4,by=0.1),labels = seq(0,0.4,by=0.1)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
   theme_bw()+
@@ -114,11 +114,11 @@ msAttrCExs402<-msAttrCExs40%>%
 
 sizeAttrCatchCE40<-ggplot(msAttrCE402,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)))+
   geom_hline(yintercept = 100,color="gray66")+
-  geom_line(size=0.8)+
-  # geom_smooth(size=0.8,se=FALSE)+
+  # geom_line(size=0.8)+
+  geom_smooth(size=0.8,se=FALSE)+
   #geom_point()+
    labs(y="\n\n",x="")+
-  scale_y_continuous(limits = c(55,135))+
+  scale_y_continuous(limits = c(40,135))+
   scale_x_continuous(breaks = seq(0,0.4,by=0.1),labels = seq(0,0.4,by=0.1)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
   theme_bw()+
@@ -130,10 +130,10 @@ sizeAttrCatchCE40<-ggplot(msAttrCE402,aes(x=mpaSize,y=diffCtch*100,group=as.fact
 
 sizeAttrCatchSce40<-ggplot()+ ## replaced sm with xsm to excentuate differences (smaller farms)
   geom_hline(yintercept = 100,color="gray66")+
-  geom_line(data=msAttrCExs402,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8)+
-  # geom_smooth(data=msAttrCExs202,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
+  # geom_line(data=msAttrCExs402,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8)+
+  geom_smooth(data=msAttrCExs402,aes(x=mpaSize,y=diffCtch*100,group=as.factor(attr),color=as.factor(attr)),size=0.8,se=FALSE)+
    labs(y="\n\n",x="")+
-  scale_y_continuous(limits = c(55,135))+
+  scale_y_continuous(limits = c(40,135))+
   scale_x_continuous(breaks = seq(0,0.4,by=0.1),labels = seq(0,0.4,by=0.1)*100)+
   scale_color_manual(values = attrCols,name="Attraction",labels=c("None","Low","Moderate","High"))+
   theme_bw()+
@@ -146,7 +146,8 @@ sizeAttrCatchSce40<-ggplot()+ ## replaced sm with xsm to excentuate differences 
 fig2quad40<-(sizeAttrCatchCE40+sizeAttrCatchSce40)/(sizeAttrCatch40+sizeAttrCatchS40)+
   plot_layout(guides = "collect")+
   plot_annotation(tag_levels = "A")&
-    theme(plot.tag = element_text(face = 'bold'))
+    theme(plot.tag = element_text(face = 'bold',
+                                  size = 18))
 
 fig2quad40
 
@@ -162,12 +163,15 @@ Relative differences in catch biomass compared to no farm over a range of total 
 ```{r}
 
 ### Farm size colors:
-# szCols<-c(beyonce_palette(129)[c(1,2,4)],beyonce_palette(6)[5])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
-szCols<-c(paletteer_d("beyonce::X129")[c(1,2,4)], paletteer_d("beyonce::X6")[5])# edit bc beyonce package doesn't work for this updated R version. Paletteer works th
-names(szCols)<-c("60","20","3","0")
+# mvCols<-c(beyonce_palette(129)[c(1,2,4)],beyonce_palette(6)[5])#paletteer_d("ghibli::PonyoMedium")[c(1,3,6,4)]
+mvCols<-c(paletteer_d("beyonce::X129")[c(1,2,4)], paletteer_d("beyonce::X6")[5])# edit bc beyonce package doesn't work for this updated R version. Paletteer works th
+names(mvCols)<-c("60","20","3","0")
 
 ### control CE data
 nullCE<-read_csv("runs/constantEffortMSY/nullCE.csv")
+
+zeros2<-data.frame(mpaSz=c(0,0,0,0),aMove=c(0,3,20,60),mgmt=c("oa","oa","oa","oa"),biomass=c(NA,NA,NA,NA),catch=c(NA,NA,NA,NA),diffBm=c(NA,NA,NA,NA),diffCtch=c(1,1,1,1))%>%
+  bind_rows(data.frame(mpaSz=c(0,0,0,0),aMove=c(0,3,20,60),mgmt=c("ce","ce","ce","ce"),biomass=c(NA,NA,NA,NA),catch=c(NA,NA,NA,NA),diffBm=c(NA,NA,NA,NA),diffCtch=c(1,1,1,1)))
 
 
 ### Benefits to wild population
@@ -181,15 +185,15 @@ szMgmtBen2<-szMgmtBen%>%
                           TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
 
 szMgmtBen3<-szMgmtBen2%>%
-  bind_rows(.,zeros)
+  bind_rows(.,zeros2)
 
 ### open access
 
 szMgmtBenCtchOA<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="oa",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  # geom_smooth(size=0.8,se=FALSE)+#
-  geom_line(size=0.8)+
-  scale_color_manual(values = rev(szCols),name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  geom_smooth(size=0.8,se=FALSE)+#
+  # geom_line(size=0.8)+
+  scale_color_manual(values = rev(mvCols),name="Adult\nmovement",c("None","Low","Moderate","High"))+
   scale_y_continuous(limits = c(40,200))+
   labs(x="",y="\n\n",title = "")+
   theme_bw()+
@@ -203,9 +207,9 @@ szMgmtBenCtchOA<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="oa",],aes(x=mpaSz*100,y=dif
 
 szMgmtBenCtchCE<-ggplot(szMgmtBen3[szMgmtBen3$mgmt=="ce",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  # geom_smooth(size=0.8,se=FALSE)+
-  geom_line(size=0.8)+
-  scale_color_manual(values = rev(szCols),name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  geom_smooth(size=0.8,se=FALSE)+
+  # geom_line(size=0.8)+
+  scale_color_manual(values = rev(mvCols),name="Adult\nmovement",c("None","Low","Moderate","High"))+
   scale_y_continuous(limits = c(40,200))+
   labs(x="",y="\n\n",title = "Positive impacts\n")+
   theme_bw()+
@@ -230,15 +234,15 @@ szMgmtNeg2<-szMgmtNeg%>%
                           TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
 
 szMgmtNeg3<-szMgmtNeg2%>%
-  bind_rows(.,zeros)
+  bind_rows(.,zeros2)
 
 ### Open access
 
 szMgmtNegCtchOA<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="oa",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
   geom_hline(yintercept = 100,color="gray66")+
-  # geom_smooth(size=0.8,se=FALSE)+
-  geom_line(size=0.8)+
-  scale_color_manual(values = rev(szCols),name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  geom_smooth(size=0.8,se=FALSE)+
+  # geom_line(size=0.8)+
+  scale_color_manual(values = rev(mvCols),name="Adult\nmovement",c("None","Low","Moderate","High"))+
 scale_y_continuous(limits = c(40,200))+
   labs(x="",y="\n\n",title = "")+
   theme_bw()+
@@ -255,7 +259,7 @@ szMgmtNegCtchCE<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="ce",],aes(x=mpaSz*100,y=dif
   geom_hline(yintercept = 100,color="gray66")+
   geom_smooth(size=0.8,se=FALSE)+
   # geom_line(size=0.8)+
-  scale_color_manual(values = rev(szCols),name="Adult\nmovement",c("None","Low","Moderate","High"))+
+  scale_color_manual(values = rev(mvCols),name="Adult\nmovement",c("None","Low","Moderate","High"))+
   scale_y_continuous(limits = c(40,200))+
   labs(x="",y="\n\n",title = "Negative impacts\n")+
   theme_bw()+
@@ -265,9 +269,11 @@ szMgmtNegCtchCE<-ggplot(szMgmtNeg3[szMgmtNeg3$mgmt=="ce",],aes(x=mpaSz*100,y=dif
         legend.text = element_text(size=12),
         legend.title = element_text(size=16))
 
-fig3Plts<-((szMgmtBenCtchCE + szMgmtNegCtchCE)/(szMgmtBenCtchOA + szMgmtNegCtchOA)) +
-  plot_annotation(tag_levels = 'A') + 
-  plot_layout(guides="collect")
+fig3Plts<-((szMgmtBenCtchCE + szMgmtNegCtchCE)/(szMgmtBenCtchOA + szMgmtNegCtchOA)) + 
+  plot_layout(guides="collect") +
+  plot_annotation(tag_levels = 'A')&
+    theme(plot.tag = element_text(face = 'bold',
+                                  size = 18)) 
 
 
 fig3Plts
