@@ -91,6 +91,22 @@ fishPV <- create_fish(
   density_movement_modifier = 0.1
   )
   
+# fishPVdi <- create_fish(
+#   scientific_name = "Pollachius virens",
+#   query_fishlife = T,
+#   mat_mode = "length",
+#   time_step = 1,
+#   max_age = 20,
+#   vbk=0.4, 
+#   age_mature = 1,
+#   steepness = 0.5,
+#   r0 = 5000,
+#   adult_movement = am,
+#   larval_movement = lm,
+#   density_dependence_form = 1, # density independent recruitment
+#   density_movement_modifier = 0.1
+#   )
+
 fleetOApv <- create_fleet(
   fish = fishPV,
   cost_cv =  0,
@@ -113,7 +129,7 @@ fleetOApv <- create_fleet(
   
 ### Constant effort fleet
 
-eMSY<-134
+eMSY<-134*nPatch
 
 
 fleetCEpv <- create_fleet(
@@ -236,6 +252,7 @@ nullOArun<-tempRunP(fleet = fleetOApv,
   filter(year==max(year))%>%
   summarise(biomass=sum(biomass),
             catch=sum(biomass_caught))
+nullOA<-nullOArun[nrow(nullOArun),2:3]
 
 # write_csv(nullOArun,"runs/openAccess/nullOA.csv")
 
@@ -253,6 +270,8 @@ nullCErun<-tempRunP(fleet = fleetCEpv,
   filter(year==max(year))%>%
   summarise(biomass=sum(biomass),
             catch=sum(biomass_caught))
+
+nullCE<-nullCErun[nullCErun$year==sYrs,]
 
 # write_csv(nullCErun,"runs/constantEffortMSY/nullCE.csv")
 
@@ -311,23 +330,43 @@ jattDat<-jattFarm%>%
 
 ## one large farm
 
-jatt1ce<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=100, runName = 1) #pi = 10 is the default
+jatt1ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=100, runName = 1) #pi = 10 is the default
 
-jatt3ce<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=100, runName = 3)
+jatt3ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=100, runName = 3)
 
-jatt9ce<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=100, runName = 9)
+jatt9ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=100, runName = 9)
 
-jatt15ce<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=100, runName = 15)
+jatt15ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=100, runName = 15)
 
 ### Several small farms: farm size = 5
 
-jatt1sCE<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=100, runName = 1) #pi = 10 is the default
+jatt1sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=100, runName = 1) #pi = 10 is the default
 
-jatt3sCE<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=100, runName = 3)
+jatt3sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=100, runName = 3)
 
-jatt9sCE<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=100, runName = 9)
+jatt9sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=100, runName = 9)
 
-jatt15sCE<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=100, runName = 15)
+jatt15sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=100, runName = 15)
+
+
+### plot together
+jattCEFarm<-bind_rows(jatt1ce,jatt3ce,jatt9ce,jatt15ce)%>%
+  mutate(farmDesign="large")%>%
+  bind_rows(.,bind_rows(jatt1sCE,jatt3sCE,jatt9sCE,jatt15sCE)%>%
+              mutate(farmDesign="small"))%>%
+  group_by(year,run,farmDesign)%>%
+  summarise(biomass=sum(biomass),
+            catch=sum(biomass_caught))
+
+jattDatCE<-jattCEFarm%>%
+  left_join(.,nullCErun%>%
+              # select(-run)%>%
+              group_by(year)%>%
+              summarise(bmNull=sum(biomass),
+                        ctchNull=sum(catch)), 
+            by="year")%>%
+  mutate(bmDiff=biomass-bmNull,
+         ctchDiff=catch-ctchNull)
 
 # write_csv(jattDatCE,"runs/constantEffortMSY/timeJattCE.csv")
 
@@ -387,46 +426,6 @@ msAttPlFun<-function(mpaSzVec,attrVec,pK,farmYrsVec,farmSz,mgmt){
 }
 
 
-# ### one large area - OA
-# msAttrOA<-msAttPlFun(mpaSzVec = seq(0.1,0.9,by=0.1),
-#                      attrVec = c(1,3,9,15), 
-#                      pK=ptchKp,
-#                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-#                      farmSz = NA,
-#                      mgmt = "OA")
-# 
-# ### several smaller areas - OA
-# msAttrOAxs<-msAttPlFun(mpaSzVec = seq(0.1,0.9,by=0.1),
-#                      attrVec = c(1,3,9,15), 
-#                      pK=ptchKp,
-#                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-#                      farmSz=5, #this divides the farm area into farms of size 10
-#                      mgmt = "oa")
-# 
-# ### one large area - CE
-# msAttrCE<-msAttPlFun(mpaSzVec = seq(0.1,0.7,by=0.2),
-#                      attrVec = c(10,100,1000),
-#                      pK=ptchKp,
-#                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-#                      farmSz = NA,
-#                      mgmt = "ce")
-# 
-# ### several small areas - CE
-# msAttrCExs<-msAttPlFun(mpaSzVec = seq(0.1,0.7,by=0.2),
-#                      attrVec = c(10,100,1000),
-#                      pK=ptchKp,
-#                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-#                      farmSz = 5,
-#                      mgmt = "ce")
-# 
-# # write_csv(msAttrOA,"runs/openAccess/farmEq_msAttOALg.csv")
-# # write_csv(msAttrOAxs,"runs/openAccess/farmEq_msAttOAXSm.csv")
-# 
-# # write_csv(msAttrCE,"runs/constantEffortMSY/farmEq_msAttCELg.csv")
-# # write_csv(msAttrCExs,"runs/constantEffortMSY/farmEq_msAttCEXSm.csv")
-
-##### re-running limiting total farm area to 40% but doubling the granularity to 5% increments instead of 10%
-
 ### one large area - OA
 msAttrOA_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      attrVec = c(1,3,9,15), 
@@ -475,7 +474,7 @@ msAttrCExs_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
 
 ```{r}
 
-mpaMgmtAMPlFunMat<-function(mpaSzVec,amVec,farmSz,attr,pK,mImp,farmYrsVec){
+mpaMgmtAMPlFunMat<-function(mpaSzVec,amVec,farmSz,attr,pIncr,pK,mImp,farmYrsVec){
   
   mpaMgmtpDf<-expand.grid(mpaSz=mpaSzVec,
                           aMove=amVec,
@@ -509,7 +508,7 @@ mpaMgmtAMPlFunMat<-function(mpaSzVec,amVec,farmSz,attr,pK,mImp,farmYrsVec){
     farm_yrs = farmYrsVec,
     buffSize = buff,
     patchK = pK,
-    prodIncr = 1,
+    prodIncr = pIncr,
     mImp=mImp)%>%
     filter(year==max(year))%>%
     summarise(biomass=sum(biomass),
@@ -556,17 +555,19 @@ mpaMgmtAMPlFunMat<-function(mpaSzVec,amVec,farmSz,attr,pK,mImp,farmYrsVec){
 mpaMgmtAMBen_40<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.4,by=0.05),
                   attr = 5,
                   amVec= c(0,3,20,60),
+                  pIncr = 1,
                   pK=ptchKp,
                   farmSz = 5,
-                  mImp=0.8, ## benefit bc decreases nat mort
+                  mImp=0.9, ## benefit bc decreases nat mort
                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
 
 mpaMgmtAMNeg_40<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.4,by=0.05),
                   attr = 5,
                   amVec= c(0,3,20,60),
                   farmSz = 5,
+                  pIncr = 1,
                   pK = ptchKp,
-                  mImp = 1.2, ## damage bc increases nat mort
+                  mImp = 1.1, ## damage bc increases nat mort
                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
 
 mpaMgmtAMInert_40<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.4,by=0.05),
@@ -574,10 +575,83 @@ mpaMgmtAMInert_40<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.4,by=0.05),
                   amVec= c(0,3,20,60),
                   farmSz = 5,
                   pK = ptchKp,
-                  mImp = 1, ## damage bc increases nat mort
-                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
-# write_csv(mpaMgmtAMBen_40,"runs/movement/farmEq_mpaMgmtAMBen_40.csv")
-# write_csv(mpaMgmtAMNeg_40,"runs/movement/farmEq_mpaMgmtAMNeg_40.csv")
-# write_csv(mpaMgmtAMInert_40,"runs/movement/farmEq_mpaMgmtAM0_40.csv")
+                  pIncr = 1,
+                  mImp = 1, ##
+                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs)))
+
+# write_csv(mpaMgmtAMBen_40,"runs/movement/farmEq_mpaMgmtAMBen_40msy.csv")
+# write_csv(mpaMgmtAMNeg_40,"runs/movement/farmEq_mpaMgmtAMNeg_40msy.csv")
+# write_csv(mpaMgmtAMInert_40,"runs/movement/farmEq_mpaMgmtAM0_40msy.csv")
 
 ```
+
+***
+
+#### Total farm area vs. damage rates
+
+```{r}
+
+mpaMgmtDmgPlFunMat<-function(mpaSzVec,dmgVec,farmSz,attr,pIncr,pK,farmYrsVec){
+  
+  mpaMgmtpDf<-expand.grid(mpaSz=mpaSzVec,
+                          damage=dmgVec,
+                          mgmt=c("oa","ce"))%>%
+    mutate(biomass=0,
+           catch=0)
+
+  
+   for(i in 1:nrow(mpaMgmtpDf)){
+     
+     fleetIn<-if(mpaMgmtpDf$mgmt[i]=="oa") {fleetIn<-fleetOApv} else {fleetIn<-fleetCEpv}
+     
+     # fishPV$adult_movement<-mpaMgmtpDf[i,"aMove"]
+  
+  mpaMgmtpDf[i,c("biomass","catch")]<-sim_fisheryAqK(
+    fish = fishPV,
+    fleet = fleetIn,
+    manager = create_manager(mpa_size = mpaMgmtpDf$mpaSz[i], year_mpa = mpaYr),
+    num_patches = nPatch,
+    sim_years = sYrs,
+    burn_years = bYrs,
+    time_step = fishPV$time_step,
+    est_msy = FALSE,
+    random_mpas = FALSE,
+    min_size = 0.05,
+    sprinkler = FALSE,
+    keep_burn = FALSE,
+    farmSize = farmSz,
+    farmAttr = attr,
+    ddAttr = 1,
+    farm_yrs = farmYrsVec,
+    buffSize = buff,
+    patchK = pK,
+    prodIncr = pIncr,
+    mImp=mpaMgmtpDf[i,"damage"])%>%
+    filter(year==max(year))%>%
+    summarise(biomass=sum(biomass),
+              catch=sum(biomass_caught))%>%
+    select(biomass,catch)%>%
+    as_vector()
+   }
+  
+  return(mpaMgmtpDf)
+  
+}
+
+
+##### re-running limiting total farm area to 20% but doubling the granularity to 5% increments instead of 10%
+
+mpaMgmtDMG<-mpaMgmtDmgPlFunMat(mpaSzVec=seq(0.05,0.4,by=0.05),
+                  attr = 5,
+                  dmgVec= c(1,1.05,1.1,1.15,1.2),
+                  pIncr = 1,
+                  pK=ptchKp,
+                  farmSz = 5,
+                  farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
+
+# write_csv(mpaMgmtDMG,"runs/movement/farmEq_mpaMgmtDmg_40msy.csv")
+
+
+```
+
+
