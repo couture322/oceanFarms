@@ -522,35 +522,7 @@ mpaMgmtAMPlFunMat<-function(mpaSzVec,amVec,farmSz,attr,pIncr,pK,mImp,farmYrsVec)
 }
 
 
-### Varies total farm area (mpaSize) and is run for both OA and CE --> with benefits
-# mpaMgmtAMBen<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.1,0.9,by=0.1),
-#                   attr = 5,
-#                   amVec= c(0,3,20,60),
-#                   pK=ptchKp,
-#                   farmSz = 5,
-#                   mImp=0.8, ## benefit bc decreases nat mort
-#                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
-# 
-# mpaMgmtAMNeg<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.1,0.9,by=0.1),
-#                   attr = 5,
-#                   amVec= c(0,3,20,60),
-#                   farmSz = 5,
-#                   pK = ptchKp,
-#                   mImp = 1.2, ## damage bc increases nat mort
-#                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
-# 
-# mpaMgmtAMInert<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.1,0.9,by=0.1),
-#                   attr = 5,
-#                   amVec= c(0,3,20,60),
-#                   farmSz = 5,
-#                   pK = ptchKp,
-#                   mImp = 1, ## damage bc increases nat mort
-#                   farmYrsVec=rep(TRUE,length(mpaYr:sYrs))) 
-# # write_csv(mpaMgmtAMBen,"runs/aqMS/farmEq_mpaMgmtAMBen.csv")
-# # write_csv(mpaMgmtNeg,"runs/aqMS/farmEq_mpaMgmtNeg.csv")
-
-
-##### re-running limiting total farm area to 20% but doubling the granularity to 5% increments instead of 10%
+### Varies total farm area (mpaSize) and is run for both OA and CE --> with benefits, damage, no impacts
 
 mpaMgmtAMBen_40<-mpaMgmtAMPlFunMat(mpaSzVec=seq(0.05,0.4,by=0.05),
                   attr = 5,

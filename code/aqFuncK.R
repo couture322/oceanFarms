@@ -807,17 +807,17 @@ sim_fisheryAqK <-
           ifelse(y > (burn_years + 1), max(effort[max(1, (y - 1 - max_window)):(y - 1)]), fleet$initial_effort)
         
         effort[y] <- determine_effort(
-          last_effort = ifelse(y > (burn_years + 1), effort[y - 1], fleet$initial_effort),
-          fleet = fleet,
-          fish = fish,
-          y = y,
-          burn_years = burn_years,
-          pop = pop,
-          mpa = mpa,
-          num_patches = num_patches,
-          effort_devs = effort_devs,
-          profit_lags = fleet$profit_lags,
-          previous_max = previous_max
+            last_effort = ifelse(y > (burn_years + 1), effort[y - 1], fleet$initial_effort),
+            fleet = fleet,
+            fish = fish,
+            y = y,
+            burn_years = burn_years,
+            pop = pop,
+            mpa = mpa,
+            num_patches = num_patches,
+            effort_devs = effort_devs,
+            profit_lags = fleet$profit_lags,
+            previous_max = previous_max
         )
         
       }
