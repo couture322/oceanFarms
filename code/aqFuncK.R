@@ -55,10 +55,6 @@ sim_fisheryAqK <-
       mutate(age=1:length(waa),
              statGrwth=c(waa[1],waa[2:length(waa)]-lag(waa)[2:length(waa)]))
     
-    ddssbaa <- data.frame(waa=c(0,fish$ssb_at_age))%>%
-      mutate(age=1:length(waa),
-             statGrwth=c(waa[1],waa[2:length(waa)]-lag(waa)[2:length(waa)]))
-    
     if (sprinkler == FALSE & mpa_habfactor == 1){
       burn_years <- 1
     }
@@ -938,18 +934,8 @@ sim_fisheryAqK <-
                                                                                          pI=prodIncr,
                                                                                          pBm =..4,
                                                                                          pK=patchK,
-                                                                                         ddwaa=ddwaa))),
-               ssb_at_age2 = as.numeric(purrr::pmap(list(age,numbers_caught,patch,pBm,mpa),~waak(aGe=..1,
-                                                                                                     nums=..2,
-                                                                                                     ptch=..3, 
-                                                                                                     mpa = ..5,
-                                                                                                     y=y,
-                                                                                                     farmYrs=farmYrs,
-                                                                                                     pI=prodIncr,
-                                                                                                     pBm =..4,
-                                                                                                     pK=patchK,
-                                                                                                     ddwaa=ddssbaa))))%>%
-        select(year,age,patch,biomass2,biomass_caught2,ssb_at_age2)
+                                                                                         ddwaa=ddwaa))))%>%
+        select(year,age,patch,biomass2,biomass_caught2)
 
      
         pop<-pop%>%
@@ -957,15 +943,12 @@ sim_fisheryAqK <-
           mutate(biomass=case_when(is.na(biomass2) ~ biomass,
                                    TRUE ~ biomass2),
                  biomass_caught=case_when(is.na(biomass_caught2) ~ biomass_caught,
-                                   TRUE ~ biomass_caught2),
-                 ssb=case_when(is.na(ssb_at_age2) ~ ssb_at_age,
-                                   TRUE ~ ssb_at_age2),)%>%
-                    select(-c(biomass2,biomass_caught2,ssb_at_age2))
+                                   TRUE ~ biomass_caught2))
 
       pop <- pop %>%
         dplyr::mutate(patch_age_costs = ((cost) * (effort) ^ fleet$beta) / fish$max_age) %>% # divide costs up among each age class
         dplyr::mutate(
-          ssb = ssb,#numbers * ssb_at_age,
+          ssb = numbers * ssb_at_age,
           #numbers * weight_at_age,
           # biomass_caught = numbers_caught * weight_at_age,
           profits = biomass_caught * price - patch_age_costs
