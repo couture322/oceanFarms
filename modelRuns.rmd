@@ -247,8 +247,7 @@ nullOArun<-tempRunP(fleet = fleetOApv,
                     attr = 1, 
                     dmm = 0.1, 
                     pK = ptchKp, 
-                    PI=1,
-                    runName = 0)%>%
+                    PI=1)%>%
   filter(year==max(year))%>%
   summarise(biomass=sum(biomass),
             catch=sum(biomass_caught))
@@ -284,23 +283,23 @@ nullCE<-nullCErun[nullCErun$year==sYrs,]
 
 ## one large farm
 
-jatt1<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=100, runName = 1) #pi = 10 is the default
+jatt1<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=10, runName = 1) #pi = 10 is the default
 
-jatt3<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=100, runName = 3)
+jatt3<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=10, runName = 3)
 
-jatt9<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=100, runName = 9)
+jatt9<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=10, runName = 9)
 
-jatt15<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=100, runName = 15)
+jatt15<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=10, runName = 15)
 
 ### Several small farms: farm size = 5
 
-jatt1s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=100, runName = 1) #pi = 10 is the default
+jatt1s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=10, runName = 1) #pi = 10 is the default
 
-jatt3s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=100, runName = 3)
+jatt3s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=10, runName = 3)
 
-jatt9s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=100, runName = 9)
+jatt9s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=10, runName = 9)
 
-jatt15s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=100, runName = 15)
+jatt15s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=10, runName = 15)
 
 ### plot together
 jattFarm<-bind_rows(jatt1,jatt3,jatt9,jatt15)%>%
@@ -313,10 +312,8 @@ jattFarm<-bind_rows(jatt1,jatt3,jatt9,jatt15)%>%
 
 jattDat<-jattFarm%>%
   left_join(.,nullOArun%>%
-              select(-run)%>%
-              group_by(year)%>%
-              summarise(bmNull=sum(biomass),
-                        ctchNull=sum(biomass_caught)), 
+              rename(bmNull=biomass,
+                        ctchNull=catch), 
             by="year")%>%
   mutate(bmDiff=biomass-bmNull,
          ctchDiff=catch-ctchNull)
@@ -330,23 +327,23 @@ jattDat<-jattFarm%>%
 
 ## one large farm
 
-jatt1ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=100, runName = 1) #pi = 10 is the default
+jatt1ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=10, runName = 1) #pi = 10 is the default
 
-jatt3ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=100, runName = 3)
+jatt3ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=10, runName = 3)
 
-jatt9ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=100, runName = 9)
+jatt9ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=10, runName = 9)
 
-jatt15ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=100, runName = 15)
+jatt15ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=10, runName = 15)
 
 ### Several small farms: farm size = 5
 
-jatt1sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=100, runName = 1) #pi = 10 is the default
+jatt1sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=10, runName = 1) #pi = 10 is the default
 
-jatt3sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=100, runName = 3)
+jatt3sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=10, runName = 3)
 
-jatt9sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=100, runName = 9)
+jatt9sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=10, runName = 9)
 
-jatt15sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=100, runName = 15)
+jatt15sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=10, runName = 15)
 
 
 ### plot together
@@ -360,10 +357,8 @@ jattCEFarm<-bind_rows(jatt1ce,jatt3ce,jatt9ce,jatt15ce)%>%
 
 jattDatCE<-jattCEFarm%>%
   left_join(.,nullCErun%>%
-              # select(-run)%>%
-              group_by(year)%>%
-              summarise(bmNull=sum(biomass),
-                        ctchNull=sum(catch)), 
+              rename(bmNull=biomass,
+                        ctchNull=catch), 
             by="year")%>%
   mutate(bmDiff=biomass-bmNull,
          ctchDiff=catch-ctchNull)
@@ -413,7 +408,7 @@ msAttPlFun<-function(mpaSzVec,attrVec,pK,farmYrsVec,farmSz,mgmt){
     farm_yrs = farmYrsVec,
     buffSize = buff,
     patchK = pK,
-    prodIncr = 100)%>%
+    prodIncr = 10)%>%
     filter(year==max(year))%>%
     summarise(biomass=sum(biomass),
               catch=sum(biomass_caught))%>%
@@ -427,7 +422,7 @@ msAttPlFun<-function(mpaSzVec,attrVec,pK,farmYrsVec,farmSz,mgmt){
 
 
 ### one large area - OA
-msAttrOA_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
+msAttrOA<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
@@ -435,7 +430,7 @@ msAttrOA_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      mgmt = "oa")
 
 ### several smaller areas - OA
-msAttrOAxs_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
+msAttrOAxs<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
@@ -443,7 +438,7 @@ msAttrOAxs_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      mgmt = "oa")
 
 ### one large area - CE
-msAttrCE_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
+msAttrCE<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
@@ -451,18 +446,18 @@ msAttrCE_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      mgmt = "ce")
 
 ### several small areas - CE
-msAttrCExs_40<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
+msAttrCExs<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      attrVec = c(1,3,9,15), 
                      pK=ptchKp,
                      farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
                      farmSz = 5,
                      mgmt = "ce")
 
-# write_csv(msAttrOA_40,"runs/openAccess/farmEq_msAttOALg_40.csv")
-# write_csv(msAttrOAxs_40,"runs/openAccess/farmEq_msAttOAXSm_40.csv")
+# write_csv(msAttrOA,"runs/openAccess/farmEq_msAttOALg.csv")
+# write_csv(msAttrOAxs,"runs/openAccess/farmEq_msAttOAXSm.csv")
 # 
-# write_csv(msAttrCE_40,"runs/constantEffortMSY/farmEq_msAttCELg_40.csv")
-# write_csv(msAttrCExs_40,"runs/constantEffortMSY/farmEq_msAttCEXSm_40.csv")
+# write_csv(msAttrCE,"runs/constantEffortMSY/farmEq_msAttCELg.csv")
+# write_csv(msAttrCExs,"runs/constantEffortMSY/farmEq_msAttCEXSm.csv")
 
 
 ```
