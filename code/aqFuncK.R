@@ -867,9 +867,6 @@ sim_fisheryAqK <-
                                  fish = fish,
                                  fleet = fleet,
                                  y = y,
-                                 # pBM=totPop,
-                                 # pK=patchK,
-                                 # pI=prodIncr,
                                  mImp=mImp,
                                  farmYrs=farmYrs)$survivors,
                                grow_and_die_adj(
@@ -878,10 +875,6 @@ sim_fisheryAqK <-
                                  mpa = FALSE,
                                  fish = fish,
                                  fleet = fleet,
-                                 y = y,
-                                 # pBM=totPop,
-                                 # pK=patchK,
-                                 # pI=prodIncr,
                                  mImp=1,
                                  farmYrs=farmYrs)$survivors)) %>%
         ungroup() %>%
@@ -903,9 +896,6 @@ sim_fisheryAqK <-
                      fish = fish,
                      fleet = fleet,
                      y = y,
-                     #pBM=totPop,
-                     #pK=patchK,
-                     #pI=prodIncr,
                      mImp=mImp,
                      farmYrs=farmYrs)$caught),
                    c(grow_and_die_adj(
@@ -915,9 +905,6 @@ sim_fisheryAqK <-
                      fish = fish,
                      fleet = fleet,
                      y = y,
-                     # pBM=totPop,
-                     # pK=patchK,
-                     # pI=prodIncr,
                      mImp=1,
                      farmYrs=farmYrs)$caught))) %>%
         ungroup() %>%
@@ -964,7 +951,7 @@ sim_fisheryAqK <-
                                                                                                      ddwaa=ddssbaa))))%>%
         select(year,age,patch,biomass2,biomass_caught2,ssb_at_age2)
 
-      #pop[pop$year==y,"biomass"] <- pBmDf$biomass
+     
         pop<-pop%>%
           left_join(.,pBmDf,by=c("year","age","patch"))%>%
           mutate(biomass=case_when(is.na(biomass2) ~ biomass,
@@ -998,8 +985,7 @@ sim_fisheryAqK <-
           phase = model_phase,
           move_matrix = larval_move_matrix,
           rec_devs = rec_devs[y + 1],
-          patch_habitat = habitat#,
-          #fallowHab = fallowHab
+          patch_habitat = habitat
         )
       
       
@@ -1061,8 +1047,7 @@ grow_and_die_adj <- function(numbers, f, mpa, fish, fleet, y, mImp,farmYrs=farmY
   survivors <- vector(mode = 'numeric', length = length(numbers))
   
   survival<-(exp(-fish$time_step*(fish$m*(mImp) + (f * fleet$sel_at_age))))
-  # survival <- (1-(fish$time_step*(fish$m*(mImp) + (f * fleet$sel_at_age)))) * (1-(pBM/pK)) # logistic attempt
-  
+
     death <-  1 - survival
   
   max_index <- length(survivors)
@@ -1070,11 +1055,10 @@ grow_and_die_adj <- function(numbers, f, mpa, fish, fleet, y, mImp,farmYrs=farmY
 
   survivors[2:max_index] <-
     numbers[1:(max_index - 1)] * survival[1:(max_index - 1)]
-    # pmax(0,(numbers[1:(max_index - 1)] + numbers[1:(max_index - 1)] * survival[1:(max_index - 1)])  * (1-(pBM/pK))) # logistic attempt
-  
+
   survivors[max_index] <-
     survivors[max_index] +  numbers[max_index] * survival[max_index]
-    # pmax(0,(survivors[max_index] + numbers[max_index] * survival[max_index])  * (1-(pBM/pK))) # logistic attempt
+
   
   caught <-((fish$time_step * f * fleet$sel_at_age) / (fish$time_step * (fish$m*(mImp) + (f * fleet$sel_at_age)))) *  (numbers * death)
   
@@ -1094,11 +1078,11 @@ waak <- function(aGe, nums, ptch, mpa, farmYrs=farmYrs, y=y, pBm=pBm, pK=patchK,
     pK <- pK
   }
 
-  pGr <- ddwaa$statGrwth[ddwaa$age == aGe] * (1-(pBm/pK)) #ddwaa$statGrwth[ddwaa$age==aGe]
+  pGr <- ddwaa$statGrwth[ddwaa$age == aGe] * (1-(pBm/pK)) 
 
   pWt <- if(aGe==1) { 0 } else {ddwaa$waa[ddwaa$age == aGe-1] + pGr}
   
   bioM <- nums * pWt
   
-  return(bioM)
+  return(bioM) #biomass by age & patch
 }
