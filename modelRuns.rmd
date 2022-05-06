@@ -247,7 +247,7 @@ nullOArun<-tempRunP(fleet = fleetOApv,
                     attr = 1, 
                     dmm = 0.1, 
                     pK = ptchKp, 
-                    PI=1)%>%
+                    PI=1,runName = "nullOA")%>%
   filter(year==max(year))%>%
   summarise(biomass=sum(biomass),
             catch=sum(biomass_caught))
@@ -265,7 +265,7 @@ nullCErun<-tempRunP(fleet = fleetCEpv,
                     dmm = 0.1, 
                     pK = ptchKp, 
                     PI=1,
-                    runName = 0)%>%
+                    runName = 0,runName = "nullCE")%>%
   filter(year==max(year))%>%
   summarise(biomass=sum(biomass),
             catch=sum(biomass_caught))
@@ -315,10 +315,10 @@ jattDat<-jattFarm%>%
               rename(bmNull=biomass,
                         ctchNull=catch), 
             by="year")%>%
-  mutate(bmDiff=biomass-bmNull,
-         ctchDiff=catch-ctchNull)
+  mutate(bmDiff=biomass/bmNull,
+         ctchDiff=catch/ctchNull)
 
-# write_csv(jattDat,"runs/openAccess/timeJattOA.csv")
+# write_csv(jattDat,"runs/openAccess/timeJattOA_perc.csv")
 
 ```
 
@@ -360,10 +360,10 @@ jattDatCE<-jattCEFarm%>%
               rename(bmNull=biomass,
                         ctchNull=catch), 
             by="year")%>%
-  mutate(bmDiff=biomass-bmNull,
-         ctchDiff=catch-ctchNull)
+  mutate(bmDiff=biomass/bmNull,
+         ctchDiff=catch/ctchNull)
 
-# write_csv(jattDatCE,"runs/constantEffortMSY/timeJattCE.csv")
+# write_csv(jattDatCE,"runs/constantEffortMSY/timeJattCE_perc.csv")
 
 ```
 
