@@ -916,35 +916,36 @@ sim_fisheryAqK <-
                     summarise(pBm=sum(biomass),.groups="drop"),
                   by="patch")%>%
         mutate(biomass2=as.numeric(purrr::pmap(list(age,numbers,patch,pBm,mpa),~waak(aGe=..1,
-                                                                                nums=..2,
-                                                                                ptch=..3, 
-                                                                                mpa = ..5,
-                                                                                y=y,
-                                                                                farmYrs=farmYrs,
-                                                                                pI=prodIncr,
-                                                                                pBm =..4,
-                                                                                pK=patchK,
-                                                                                ddwaa=ddwaa))),
+                                                                                     nums=..2,
+                                                                                     ptch=..3, 
+                                                                                     mpa = ..5,
+                                                                                     y=y,
+                                                                                     farmYrs=farmYrs,
+                                                                                     pI=prodIncr,
+                                                                                     pBm =..4,
+                                                                                     pK=patchK,
+                                                                                     ddwaa=ddwaa))),
                biomass_caught2 = as.numeric(purrr::pmap(list(age,numbers_caught,patch,pBm,mpa),~waak(aGe=..1,
-                                                                                         nums=..2,
-                                                                                         ptch=..3, 
-                                                                                         mpa = ..5,
-                                                                                         y=y,
-                                                                                         farmYrs=farmYrs,
-                                                                                         pI=prodIncr,
-                                                                                         pBm =..4,
-                                                                                         pK=patchK,
-                                                                                         ddwaa=ddwaa))))%>%
+                                                                                                     nums=..2,
+                                                                                                     ptch=..3, 
+                                                                                                     mpa = ..5,
+                                                                                                     y=y,
+                                                                                                     farmYrs=farmYrs,
+                                                                                                     pI=prodIncr,
+                                                                                                     pBm =..4,
+                                                                                                     pK=patchK,
+                                                                                                     ddwaa=ddwaa))))%>%
         select(year,age,patch,biomass2,biomass_caught2)
-
-     
-        pop<-pop%>%
-          left_join(.,pBmDf,by=c("year","age","patch"))%>%
-          mutate(biomass=case_when(is.na(biomass2) ~ biomass,
-                                   TRUE ~ biomass2),
-                 biomass_caught=case_when(is.na(biomass_caught2) ~ biomass_caught,
-                                   TRUE ~ biomass_caught2))
-
+      
+      
+      pop<-pop%>%
+        left_join(.,pBmDf,by=c("year","age","patch"))%>%
+        mutate(biomass=case_when(is.na(biomass2) ~ biomass,
+                                 TRUE ~ biomass2),
+               biomass_caught=case_when(is.na(biomass_caught2) ~ biomass_caught,
+                                        TRUE ~ biomass_caught2))%>%
+        select(-c(biomass2,biomass_caught2))
+      
       pop <- pop %>%
         dplyr::mutate(patch_age_costs = ((cost) * (effort) ^ fleet$beta) / fish$max_age) %>% # divide costs up among each age class
         dplyr::mutate(
