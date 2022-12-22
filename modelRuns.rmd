@@ -201,7 +201,7 @@ oaHomoKp <- sim_fisheryAqK(
 
 ```{r tempRunsFunP}
 
-tempRunP<-function(fleet,mpaSize,farmSz=NA,farmYrsVec=NA,attr,dmm,pK,PI=10,runName){
+tempRunP<-function(fleet,mpaSize,farmSz=NA,farmYrsVec=NA,attr,dmm,pK,PI=3,runName){
   
   fishPV$density_movement_modifier<-dmm
   
@@ -253,7 +253,7 @@ nullOArun<-tempRunP(fleet = fleetOApv,
             catch=sum(biomass_caught))
 nullOA<-nullOArun[nrow(nullOArun),2:3]
 
-# write_csv(nullOArun,"runs/openAccess/nullOA.csv")
+# write_csv(nullOA,"runs/openAccess/nullOA.csv")
 
 ### Constant effort (MSY) control
 
@@ -265,7 +265,7 @@ nullCErun<-tempRunP(fleet = fleetCEpv,
                     dmm = 0.1, 
                     pK = ptchKp, 
                     PI=1,
-                    runName = 0,runName = "nullCE")%>%
+                    runName = "nullCE")%>%
   filter(year==max(year))%>%
   summarise(biomass=sum(biomass),
             catch=sum(biomass_caught))
@@ -283,23 +283,23 @@ nullCE<-nullCErun[nullCErun$year==sYrs,]
 
 ## one large farm
 
-jatt1<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=10, runName = 1) #pi = 10 is the default
+jatt1<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=3, runName = 1) #pi = 3 is the default
 
-jatt3<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=10, runName = 3)
+jatt3<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=3, runName = 3)
 
-jatt9<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=10, runName = 9)
+jatt9<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=3, runName = 9)
 
-jatt15<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=10, runName = 15)
+jatt15<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=3, runName = 15)
 
 ### Several small farms: farm size = 5
 
-jatt1s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=10, runName = 1) #pi = 10 is the default
+jatt1s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=3, runName = 1) #pi = 10 is the default
 
-jatt3s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=10, runName = 3)
+jatt3s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=3, runName = 3)
 
-jatt9s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=10, runName = 9)
+jatt9s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=3, runName = 9)
 
-jatt15s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=10, runName = 15)
+jatt15s<-tempRunP(fleet = fleetOApv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=3, runName = 15)
 
 ### plot together
 jattFarm<-bind_rows(jatt1,jatt3,jatt9,jatt15)%>%
@@ -327,23 +327,23 @@ jattDat<-jattFarm%>%
 
 ## one large farm
 
-jatt1ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=10, runName = 1) #pi = 10 is the default
+jatt1ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=3, runName = 1) #pi = 10 is the default
 
-jatt3ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=10, runName = 3)
+jatt3ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=3, runName = 3)
 
-jatt9ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=10, runName = 9)
+jatt9ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=3, runName = 9)
 
-jatt15ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=10, runName = 15)
+jatt15ce<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 20, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=3, runName = 15)
 
 ### Several small farms: farm size = 5
 
-jatt1sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=10, runName = 1) #pi = 10 is the default
+jatt1sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz =5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 1, dmm = 0.1, pK = ptchKp, PI=3, runName = 1) #pi = 10 is the default
 
-jatt3sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=10, runName = 3)
+jatt3sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 3, dmm = 0.1, pK = ptchKp, PI=3, runName = 3)
 
-jatt9sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=10, runName = 9)
+jatt9sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 9, dmm = 0.1, pK = ptchKp, PI=3, runName = 9)
 
-jatt15sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=10, runName = 15)
+jatt15sCE<-tempRunP(fleet = fleetCEpv, mpaSize = 0.2, farmSz = 5, farmYrsVec = rep(TRUE,length(mpaYr:sYrs)), attr = 15, dmm = 0.1, pK = ptchKp, PI=3, runName = 15)
 
 
 ### plot together
@@ -408,7 +408,7 @@ msAttPlFun<-function(mpaSzVec,attrVec,pK,farmYrsVec,farmSz,mgmt){
     farm_yrs = farmYrsVec,
     buffSize = buff,
     patchK = pK,
-    prodIncr = 10)%>%
+    prodIncr = 3)%>%
     filter(year==max(year))%>%
     summarise(biomass=sum(biomass),
               catch=sum(biomass_caught))%>%
