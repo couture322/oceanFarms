@@ -272,7 +272,7 @@ nullCErun<-tempRunP(fleet = fleetCEpv,
 
 nullCE<-nullCErun[nullCErun$year==sYrs,]
 
-# write_csv(nullCErun,"runs/constantEffortMSY/nullCE.csv")
+# write_csv(nullCE,"runs/constantEffortMSY/nullCE.csv")
 
 ```
 
@@ -318,7 +318,7 @@ jattDat<-jattFarm%>%
   mutate(bmDiff=biomass/bmNull,
          ctchDiff=catch/ctchNull)
 
-# write_csv(jattDat,"runs/openAccess/timeJattOA_perc.csv")
+ # ZåÅÅAzwrite_csv(jattDat,"runs/openAccess/timeJattOA_perc3.csv")
 
 ```
 
@@ -363,7 +363,7 @@ jattDatCE<-jattCEFarm%>%
   mutate(bmDiff=biomass/bmNull,
          ctchDiff=catch/ctchNull)
 
-# write_csv(jattDatCE,"runs/constantEffortMSY/timeJattCE_perc.csv")
+# write_csv(jattDatCE,"runs/constantEffortMSY/timeJattCE_perc3.csv")
 
 ```
 
@@ -373,7 +373,7 @@ jattDatCE<-jattCEFarm%>%
 
 #### Total farm area v attraction
 
-Patch K is increased at a constant rate, 100, using the farm scenario, where attraction is tested at several levels. Solid lines are farms of size 10, dashed are one continuous protected space.
+Patch K is increased at a constant rate, 3, using the farm scenario, where attraction is tested at several levels. Solid lines are farms of size 10, dashed are one continuous protected space.
 
 ```{r eval=FALSE}
 
@@ -430,34 +430,34 @@ msAttrOA<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
                      mgmt = "oa")
 
 ### several smaller areas - OA
-msAttrOAxs<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
-                     attrVec = c(1,3,9,15), 
-                     pK=ptchKp,
-                     farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                     farmSz=5, #this divides the farm area into farms of size 10
-                     mgmt = "oa")
+  msAttrOAxs<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
+                       attrVec = c(1,3,9,15), 
+                       pK=ptchKp,
+                       farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
+                       farmSz=5, #this divides the farm area into farms of size 10
+                       mgmt = "oa")
+  
+  ### one large area - CE
+  msAttrCE<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
+                       attrVec = c(1,3,9,15), 
+                       pK=ptchKp,
+                       farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
+                       farmSz = NA,
+                       mgmt = "ce")
+  
+  ### several small areas - CE
+  msAttrCExs<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
+                       attrVec = c(1,3,9,15), 
+                       pK=ptchKp,
+                       farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
+                       farmSz = 5,
+                       mgmt = "ce")
 
-### one large area - CE
-msAttrCE<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
-                     attrVec = c(1,3,9,15), 
-                     pK=ptchKp,
-                     farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                     farmSz = NA,
-                     mgmt = "ce")
-
-### several small areas - CE
-msAttrCExs<-msAttPlFun(mpaSzVec = seq(0.05,0.4,by=0.05),
-                     attrVec = c(1,3,9,15), 
-                     pK=ptchKp,
-                     farmYrsVec=rep(TRUE,length(mpaYr:sYrs)),
-                     farmSz = 5,
-                     mgmt = "ce")
-
-# write_csv(msAttrOA,"runs/openAccess/farmEq_msAttOALg.csv")
-# write_csv(msAttrOAxs,"runs/openAccess/farmEq_msAttOAXSm.csv")
+# write_csv(msAttrOA,"runs/openAccess/farmEq_msAttOALg3.csv")
+# write_csv(msAttrOAxs,"runs/openAccess/farmEq_msAttOAXSm3.csv")
 # 
-# write_csv(msAttrCE,"runs/constantEffortMSY/farmEq_msAttCELg.csv")
-# write_csv(msAttrCExs,"runs/constantEffortMSY/farmEq_msAttCEXSm.csv")
+# write_csv(msAttrCE,"runs/constantEffortMSY/farmEq_msAttCELg3.csv")
+# write_csv(msAttrCExs,"runs/constantEffortMSY/farmEq_msAttCEXSm3.csv")
 
 
 ```
