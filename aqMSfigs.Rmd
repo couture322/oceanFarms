@@ -36,7 +36,7 @@ zerosDf<-data.frame(mpaSize=c(0,0,0,0),attr=c(1,3,9,15),biomass=c(NA,NA,NA,NA),c
 
 # attrCols<-beyonce_palette(19)[c(5,2:4)]
 
-attrCols<-paletteer_d("beyonce::X19")[c(5,2:4)] # edit bc beyonce package doesn't work for this updated R version. Paletteer works th
+attrCols<-paletteer_d("beyonce::X19")[c(5,4,3,2)] # edit bc beyonce package doesn't work for this updated R version. Paletteer works th
 
 names(attrCols)<-c("1","3","9","15")
 
