@@ -26,7 +26,7 @@ This document includes the supplemental information for "Fish aggregation at oce
 
 ## Figure S1
 
-**Equilibrium biomass** differences given different levels of attraction to farms with farms of varying total area coverage for (A) one large contiguous farm and (B) total farm area broken up into smaller separate farms. Catch biomass difference is calculated as the difference between catch biomass with the farm scenario and a scenario with no farm.
+**Equilibrium biomass** relative to total biomass with no farm, for different levels of attraction to farms, fishery management, and varying total area coverage. For (A, C) one large contiguous farm and (B, D) total farm area broken up into smaller separate farms. Top plots (A, B) are run under strong fisheries management, bottom plots (C, D) are under poor management. Biomass difference is calculated as the difference between catch biomass with the farm scenario and a scenario with no farm.
 
 ```{r}
 ### Color palettes
