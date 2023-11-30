@@ -25,7 +25,116 @@ Figures for ocean aquaculture impacts manuscript. First, one to define the model
 
 ![Figure 1: Diagram of ocean farm with key parameters indicated.](imgs/aqFish_fig1.png)
 
-## Figure 2: Equilibrium catches at different MPA and farm sizes
+## Figure 2: Equilibrium biomass and catches for different movement rates
+
+Equilibrium total biomass and catches relative to no farm over a range of total farm areas. Farms are all divided into several smaller farms. Here farms have no impact on wild population natural mortality rates.
+
+```{r}
+
+szMgmt0<-read_csv("runs/movement/farmEq_mpaMgmtAM0.csv")
+
+nullOA<-read_csv("runs/openAccess/nullOA.csv")
+nullCE<-read_csv("runs/constantEffortMSY/nullCE.csv")
+zeros<-data.frame(mpaSz=0,
+                  aMove=rep(c(0,3,20,60),2),
+                  mgmt=rep(c("oa","ce"),each=4),
+                  diffBm=1,
+                  diffCtch=1)
+szCols<-c(paletteer_d("beyonce::X129")[c(1,2,4)], paletteer_d("beyonce::X6")[5])
+
+szMgmt02<-szMgmt0%>%
+  mutate(diffBm=case_when(mgmt == "oa" ~  biomass/as.numeric(nullOA[1,"biomass"]),
+                          TRUE ~ biomass/as.numeric(nullCE[1,"biomass"])),
+         diffCtch=case_when(mgmt=="oa" ~  catch/as.numeric(nullOA[1,"catch"]),
+                          TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
+
+szMgmt03<-szMgmt02%>%
+  bind_rows(.,zeros)%>%
+  filter(mpaSz<0.5)
+
+# open access
+
+szMgmt0BmOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  # geom_smooth(size=0.8,se=FALSE)+#
+  geom_line(size=0.8)+
+  scale_color_manual(values = rev(szCols),name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(95,250))+
+  labs(x="",y="\n\n",title = "")+
+  # labs(x="Total farm area",y="weak mgmt\n\n% biomass",title = "")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+
+szMgmt0CtchOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  # geom_smooth(size=0.8,se=FALSE)+#
+  geom_line(size=0.8)+
+  scale_color_manual(values = rev(szCols),name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(50,140))+
+  labs(x="",y="\n\n",title = "")+
+  # labs(x="Total farm area",y="% catch",title = "")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+# effort @ MSY
+
+szMgmt0BmCE<-ggplot(szMgmt03[szMgmt03$mgmt=="ce",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  # geom_smooth(size=0.8,se=FALSE)+#
+  geom_line(size=0.8)+
+  scale_color_manual(values = rev(szCols),name="Adult\nmovement",c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(95,250))+
+  labs(x="",y="\n\n",title = "")+
+  # labs(x="",y="Strong mgmt\n\n% biomass",title = "Biomass")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+
+szMgmt0CtchCE<-ggplot(szMgmt03[szMgmt03$mgmt=="ce",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
+  geom_hline(yintercept = 100,color="gray66")+
+  # geom_smooth(size=0.8,se=FALSE)+#
+  geom_line(size=0.8)+
+  scale_color_manual(values = rev(szCols),name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
+  scale_y_continuous(limits = c(50,140))+
+  labs(x="",y="\n\n",title = "")+
+  # labs(x="",y="% catch",title = "Catch")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text=element_text(size=12),
+        axis.title = element_text(size=16),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=16))
+
+# figS6Plts<-((szMgmt0BmCE + szMgmt0CtchCE)/(szMgmt0BmOA + szMgmt0CtchOA )) +
+#   plot_annotation(tag_levels = 'A') + 
+#   plot_layout(guides="collect")
+
+
+fig2quad40<-(szMgmt0BmCE + szMgmt0CtchCE)/(szMgmt0BmOA + szMgmt0CtchOA )+
+  plot_layout(guides = "collect")+
+  plot_annotation(tag_levels = "A")&
+    theme(plot.tag = element_text(face = 'bold',
+                                  size = 18))
+
+fig2quad40
+
+```
+
+
+## Figure 3: Equilibrium catches at different MPA and farm sizes
 
 Attraction is varied and benefits from the farm are included but held constant. The committee liked the catches plot since it was most dynamic, but wanted it pulled apart to make the message that breaking the farms up into smaller spaces makes a difference, so this figure will have 2 panels, one with one large farm (A) and a second with farms broken up into smaller spaces (B). 
 
@@ -143,19 +252,19 @@ sizeAttrCatchSce40<-ggplot()+ ## replaced sm with xsm to excentuate differences 
         legend.title = element_text(size=16),
         plot.title = element_text(size=20))
 
-fig2quad40<-(sizeAttrCatchCE40+sizeAttrCatchSce40)/(sizeAttrCatch40+sizeAttrCatchS40)+
+fig3quad40<-(sizeAttrCatchCE40+sizeAttrCatchSce40)/(sizeAttrCatch40+sizeAttrCatchS40)+
   plot_layout(guides = "collect")+
   plot_annotation(tag_levels = "A")&
     theme(plot.tag = element_text(face = 'bold',
                                   size = 18))
 
-fig2quad40
+fig3quad40
 
 ```
 
 ***
 
-## Figure 3: Equilibrium catches with positive and negative impacts to wild populations
+## Figure 4: Equilibrium catches with positive and negative impacts to wild populations
 
 Relative differences in catch biomass compared to no farm over a range of total farm areas. Farms are all divided into several smaller farms. Farm scenarios with positive (A, C) and negative impacts to the wild population (C, D), under strong (A, B) and weak (B, D) fishery management. 
 

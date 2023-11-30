@@ -26,7 +26,7 @@ This document includes the supplemental information for "Fish aggregation at oce
 
 ## Figure S1
 
-**Equilibrium biomass** relative to total biomass with no farm, for different levels of attraction to farms, fishery management, and varying total area coverage. For (A, C) one large contiguous farm and (B, D) total farm area broken up into smaller separate farms. Top plots (A, B) are run under strong fisheries management, bottom plots (C, D) are under poor management. Biomass difference is calculated as the difference between catch biomass with the farm scenario and a scenario with no farm.
+**Equilibrium biomass** relative to total biomass with no farm, for different levels of attraction to farms, fishery management, and varying total area coverage. For (A, C) one large contiguous farm and (B, D) total farm area broken up into smaller separate farms. Top plots (A, B) are run under strong fisheries management, bottom plots (C, D) are under weak management. Biomass difference is calculated as the difference between catch biomass with the farm scenario and a scenario with no farm.
 
 ```{r}
 ### Color palettes
@@ -471,101 +471,10 @@ figS5Plts
 
 ```
 
+
 \newpage
 
 ## Figure S6
-
-Relative differences in total biomass and catches compared to no farm over a range of total farm areas. Farms are all divided into several smaller farms. Here farms have no impact on wild population natural mortality rates.
-
-
-```{r}
-
-szMgmt0<-read_csv("runs/movement/farmEq_mpaMgmtAM0.csv")
-
-szMgmt02<-szMgmt0%>%
-  mutate(diffBm=case_when(mgmt == "oa" ~  biomass/as.numeric(nullOA[1,"biomass"]),
-                          TRUE ~ biomass/as.numeric(nullCE[1,"biomass"])),
-         diffCtch=case_when(mgmt=="oa" ~  catch/as.numeric(nullOA[1,"catch"]),
-                          TRUE ~ catch/as.numeric(nullCE[1,"catch"])))
-
-szMgmt03<-szMgmt02%>%
-  bind_rows(.,zeros)%>%
-  filter(mpaSz<0.5)
-
-# open access
-
-szMgmt0BmOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
-  geom_hline(yintercept = 100,color="gray66")+
-  # geom_smooth(size=0.8,se=FALSE)+#
-  geom_line(size=0.8)+
-  scale_color_manual(values = rev(szCols),name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
-  scale_y_continuous(limits = c(95,250))+
-  labs(x="Total farm area",y="weak mgmt\n\n% biomass",title = "")+
-  theme_bw()+
-  theme(plot.title = element_text(hjust = 0.5, size = 16),
-        axis.text=element_text(size=12),
-        axis.title = element_text(size=16),
-        legend.text = element_text(size=12),
-        legend.title = element_text(size=16))
-
-
-szMgmt0CtchOA<-ggplot(szMgmt03[szMgmt03$mgmt=="oa",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
-  geom_hline(yintercept = 100,color="gray66")+
-  # geom_smooth(size=0.8,se=FALSE)+#
-  geom_line(size=0.8)+
-  scale_color_manual(values = rev(szCols),name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
-  scale_y_continuous(limits = c(50,140))+
-  labs(x="Total farm area",y="% catch",title = "")+
-  theme_bw()+
-  theme(plot.title = element_text(hjust = 0.5, size = 16),
-        axis.text=element_text(size=12),
-        axis.title = element_text(size=16),
-        legend.text = element_text(size=12),
-        legend.title = element_text(size=16))
-
-# effort @ MSY
-
-szMgmt0BmCE<-ggplot(szMgmt03[szMgmt03$mgmt=="ce",],aes(x=mpaSz*100,y=diffBm*100,group=aMove,color=as.factor(aMove)))+
-  geom_hline(yintercept = 100,color="gray66")+
-  # geom_smooth(size=0.8,se=FALSE)+#
-  geom_line(size=0.8)+
-  scale_color_manual(values = rev(szCols),name="Adult\nmovement",c("None","Low","Moderate","High"))+
-  scale_y_continuous(limits = c(95,250))+
-  labs(x="",y="Strong mgmt\n\n% biomass",title = "Biomass")+
-  theme_bw()+
-  theme(plot.title = element_text(hjust = 0.5, size = 16),
-        axis.text=element_text(size=12),
-        axis.title = element_text(size=16),
-        legend.text = element_text(size=12),
-        legend.title = element_text(size=16))
-
-
-szMgmt0CtchCE<-ggplot(szMgmt03[szMgmt03$mgmt=="ce",],aes(x=mpaSz*100,y=diffCtch*100,group=aMove,color=as.factor(aMove)))+
-  geom_hline(yintercept = 100,color="gray66")+
-  # geom_smooth(size=0.8,se=FALSE)+#
-  geom_line(size=0.8)+
-  scale_color_manual(values = rev(szCols),name="Adult\nmovement",labels=c("None","Low","Moderate","High"))+
-  scale_y_continuous(limits = c(50,140))+
-  labs(x="",y="% catch",title = "Catch")+
-  theme_bw()+
-  theme(plot.title = element_text(hjust = 0.5, size = 16),
-        axis.text=element_text(size=12),
-        axis.title = element_text(size=16),
-        legend.text = element_text(size=12),
-        legend.title = element_text(size=16))
-
-figS6Plts<-((szMgmt0BmCE + szMgmt0CtchCE)/(szMgmt0BmOA + szMgmt0CtchOA )) +
-  plot_annotation(tag_levels = 'A') + 
-  plot_layout(guides="collect")
-
-
-figS6Plts
-
-```
-
-\newpage
-
-## Figure S7
 
 Relative differences in total biomass (A, C) and catches (B, D) under strong (A, B) and weak (C, D) fishery management compared to no farm over a range of total farm areas. Farms are all divided into several smaller farms. Here farms have varying impacts on wild population natural mortality rates (0-20% negative impacts).
 
